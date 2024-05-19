@@ -16,6 +16,10 @@ app = Flask(__name__)
 app.secret_key = "MyGoogleSAuth"
 
 
+def check_password(self,Password):
+    return bcrypt.check_password_hash(self.Password, Password)
+
+
 
 otp =randint(000000,999999)
 
@@ -59,11 +63,35 @@ def checker(otp):
     if request.method == "POST":
         code = request.form["user-otp"]
         if code == str(otp):
+            flash("Account created", "success")
             return render_template("landing.html") 
         else:
             flash('Invalid otp',otp=otp)
     
     return ("error")
+
+@app.route("/login", methods=["GET", "POST"])
+def signin():
+    if request.method == "POST":
+        Email = request.form.get("Email")
+        Password = request.form.get("Password")
+        user = Users.query.filter_by(Email=Email).first()
+    
+        if user and user.check_password(Password):
+            login_user(user)
+            flash('Login successful!', 'success') 
+            return redirect('/')  # Redirect to landing instead of render_template
+        
+        else:
+            flash('Invalid email or password', 'danger')
+            #error = 'Invalid email or password'
+            
+    else:
+        if "user" in session:
+            return redirect('/')  # Redirect to landing instead of render_template
+    
+    return render_template("forms/SignInUp.html")
+
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -73,23 +101,26 @@ def signup():
     if form.validate() :
         user = Users(Fullname = form.Fullname.data, Email = form.Email.data,Password= form.Password.data)
         db.session.add(user)
-        db.session.commit() 
+        db.session.commit()  # Adds user in validated form to the db
 
+        # Send email with mail credentials at the top
+       
         Email = request.form['Email']
         msg = Message(subject="OTP", sender='iamhawiana@gmail.com',recipients=[Email])
         msg.body = str(otp)
-        mail.send(msg)      
-        # print (mail)
+        mail.send(msg)     
+
+        flash('Email has been sent your account', 'primary')
         return render_template ('verify.html', otp=otp) 
     
-    return ("error")
-
     return render_template("forms/SignInUp.html", form=form)
 
 @app.route("/auth", methods=["GET", "POST"])
 def login():
     return render_template("forms/SignInUp.html")
 
+
+# Google account lists display 
 @app.route("/google_auth")
 def authenticate():
     authorization_url, state = flow.authorization_url()

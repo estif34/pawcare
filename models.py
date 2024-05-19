@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired, Email, EqualTo, Length
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
-# Create owner model
+# Create owner model to form database
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Fullname = db.Column(db.String(250),nullable=False)
@@ -18,6 +18,10 @@ class Users(UserMixin, db.Model):
         self.Fullname = Fullname
         self.Email = Email
         self.Password = bcrypt.generate_password_hash(Password).decode('utf-8')
+
+    def check_password(self,Password):
+        return bcrypt.check_password_hash(self.Password, Password)
+
 
 # Registration form
 class RegistrationForm(Form):

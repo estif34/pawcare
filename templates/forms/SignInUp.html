@@ -2,6 +2,7 @@
 {% block title %} {% endblock %}
 {% block content %}
 
+
 <navbar>
     <!-- Navbar content goes here -->
 </navbar>
@@ -17,8 +18,21 @@
 </div>
 
 <div class="forms">
-  <h2 style="margin-left: 84px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;margin-top: -20px; margin-bottom: 20px; font-size: 20px;letter-spacing: 0.03em;"> Let's Get Started ! </h2>
+  <h2 style="margin-left: 84px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;margin-top: -20px; margin-bottom: 20px; font-size: 20px;letter-spacing: 0.03em;"></h2>
     <div class="container">
+      
+      {% if request.method == 'POST' %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              <div class="flashes">
+                  {% for category, message in messages %}
+                      <div class="alert alert-{{ category }}">{{ message }}</div>
+                  {% endfor %}
+              </div>
+          {% endif %}
+      {% endwith %}
+  {% endif %}
+
         <!-- Pills navs -->
         <ul class="nav nav-pills nav-justified mb-1" id="ex1" role="tablist">
             <li class="nav-item" role="presentation">
@@ -34,19 +48,25 @@
 
         <!-- Pills content -->
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-                <form action="/signin" method="POST">
+            <div class="tab-pane fade show active mt-2" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                <form action="/login" method="POST">
                     <!-- Login form content -->
                      <!-- Email input -->
-        <div data-mdb-input-init class="form-outline mb-4 mt-4">
-          <input type="email" id="loginName" class="form-control" />
+        <div data-mdb-input-init class="form-outline mb-3 mt-2">
+          <input type="email" id="loginName" name="Email" class="form-control" />
           <label class="form-label" for="loginName">Email</label>
+          <!-- {% if error %}
+          <p class=error><strong>Error:</strong> {{ error }}
+        {% endif %} -->
         </div>
   
         <!-- Password input -->
         <div data-mdb-input-init class="form-outline mb-4">
-          <input type="password" id="loginPassword" class="form-control" />
+          <input type="password" id="loginPassword"name="Password" class="form-control" />
           <label class="form-label" for="loginPassword">Password</label>
+          <!-- {% if error %}
+          <p class=error><strong>Error:</strong> {{ error }}
+        {% endif %} -->
         </div>
   
         <!-- 2 column grid layout -->
@@ -64,10 +84,11 @@
             <a href="#!">Forgot password?</a>
           </div>
         </div>
-  
+    
         <!-- Submit button -->
-        <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4 custom-btn">Sign in</button>
+        <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm custom-btn"> Login </button>
       </form>
+
         <p class="text-center">or </p>
 
         <div class="text-center mb-3 mt-2">
@@ -127,21 +148,7 @@
             I have read and agree to the terms
           </label>
         </div>
-        {% macro render_field(field) %}
-  <dt>{{ field.label }}
-  <dd>{{ field(**kwargs)|safe }}
-  {% if field.errors %}
-    <ul class=errors>
-    {% for error in field.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-  </dd>
-{% endmacro %}
         
-        <!-- Submit button -->
-          
   
         <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm custom-btn">Create Account</button>
       </form>
@@ -177,3 +184,19 @@
 </div>
 
 {% endblock %}
+
+<!-- {% macro render_field(field) %}
+  <dt>{{ field.label }}
+  <dd>{{ field(**kwargs)|safe }}
+  {% if field.errors %}
+    <ul class=errors>
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </dd>
+{% endmacro %}
+         -->
+        <!-- Submit button -->
+          
