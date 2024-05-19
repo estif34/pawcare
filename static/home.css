@@ -8,13 +8,16 @@
     margin-top: 200px;
     column-count: 2;
     column-width: 40%;
-    border: none;
+    box-shadow: none !important;
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    border: 0;
     min-height: 70vh;
     margin-left: 45px;
 }
 
 .container-fluid{
-    height: 4.5vh;
+    height: 5vh;
     border-bottom: none;
     box-shadow: none;
     
@@ -27,9 +30,9 @@
 
 #navbarCenteredExample {
     box-shadow: none;
-    height: 4vh;
+    height: 6vh;
     color: #c5a9a9;
-    border-bottom: none;
+    border: 0;
     a {
         color: black;
         font-weight: 500;
