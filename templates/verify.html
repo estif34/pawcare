@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Verify OTP</h2>
+        <form method="POST" action="{{ url_for('checker', otp=otp) }}">
+            {{ csrf }}
+            <div class="form-group">
+                <label for="user-otp">Enter OTP</label>
+                <input type="text" class="form-control" id="user-otp" name="user-otp" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Verify</button>
+        </form>
+
+        <!-- Display flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

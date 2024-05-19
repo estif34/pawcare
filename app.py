@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 app.secret_key = "MyGoogleSAuth"
 
-mail = Mail(app)
+
 
 otp =randint(000000,999999)
 
@@ -34,11 +34,11 @@ def loader_user(user_id):
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'iamhawiana@gmail.com'
-app.config['MAIL_PASSWORD'] = 'txcifdzuofrgches'
+app.config['MAIL_PASSWORD'] = 'ycgtkqjlzfxanlsb'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.secret_key = 'myfishsucksmiamiaa'
-
+mail = Mail(app)
 
 GOOGLE_CLIENT_ID = "424196244864-nu66a5mtbn7odic7ekrcoaugqpjkvphp.apps.googleusercontent.com"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
@@ -50,18 +50,21 @@ flow = Flow.from_client_secrets_file(
 )
 
 
-@app.route("/home")
+@app.route("/")
 def landing_page():
     return render_template ("landing.html")
 
-@app.route('/redirect', methods=["GET","POST"])
-def checker():
+@app.route('/auth-checker/<otp>', methods=["GET","POST"])
+def checker(otp):
     if request.method == "POST":
-        fullname = request.form.get("Fullname")
-        email = request.form.get("Email")
-        return render_template('show.html', fullname=fullname,email=email)
+        code = request.form["user-otp"]
+        if code == str(otp):
+            return render_template("landing.html") 
+        else:
+            flash('Invalid otp',otp=otp)
     
-    return ('hi there')
+    return ("error")
+
 
 @app.route('/register', methods=["GET", "POST"])
 def signup():
@@ -71,8 +74,16 @@ def signup():
         user = Users(Fullname = form.Fullname.data, Email = form.Email.data,Password= form.Password.data)
         db.session.add(user)
         db.session.commit() 
-        return render_template('landing.html')
+
+        Email = request.form['Email']
+        msg = Message(subject="OTP", sender='iamhawiana@gmail.com',recipients=[Email])
+        msg.body = str(otp)
+        mail.send(msg)      
+        # print (mail)
+        return render_template ('verify.html', otp=otp) 
     
+    return ("error")
+
     return render_template("forms/SignInUp.html", form=form)
 
 @app.route("/auth", methods=["GET", "POST"])
