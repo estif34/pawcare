@@ -1,0 +1,93 @@
+
+/* .main{
+    background: rgb(240,239,11);
+    background: linear-gradient(45deg, rgba(240,239,11,1) 0%, rgba(252,176,69,1) 98%);
+} */
+
+.land-container{
+    margin-top: 200px;
+    column-count: 2;
+    column-width: 40%;
+    border: none;
+    min-height: 70vh;
+    margin-left: 45px;
+}
+
+.container-fluid{
+    height: 4.5vh;
+    border-bottom: none;
+    box-shadow: none;
+    
+}
+
+#land-navigation{
+    border-bottom: none;
+    box-shadow: none;
+}
+
+#navbarCenteredExample {
+    box-shadow: none;
+    height: 4vh;
+    color: #c5a9a9;
+    border-bottom: none;
+    a {
+        color: black;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+    }
+
+    li{
+        margin-right: 15px;
+    }
+}
+
+.create-acc{
+    a{
+        color: hsla(60, 100%, 50%, 0.57);
+    };
+    border-radius: 10px;
+    height: 4vh;
+}
+
+
+.better-health {
+    h3{
+        font-size: 40px;
+        font-weight: bold;
+        color: black;
+        letter-spacing: 0.03em;
+    }
+}
+
+.doggie{
+    /* border-radius:71% 29% 67% 33% / 37% 64% 36% 63% ;  */
+    border-radius: 70% 30% 67% 33% / 59% 34% 66% 41%  ;
+    background-color: rgb(247, 245, 131);
+    float: right;
+    margin-top: -70px;
+    margin-right: 90px;
+    width: 80%;
+
+    img{
+        width: 100%;
+        margin-top: 10px;
+        margin-left: -20px;
+    }
+}
+
+.treat-pet{
+    color: black;
+    min-height: 20vh;
+}
+
+.numbers{
+    display: flex;
+    float: left;
+    
+    h4{
+        margin: 40px;
+        font-weight: bolder;
+        margin-top: -20px;
+        color: black;
+    }
+}

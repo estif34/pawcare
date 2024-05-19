@@ -1,0 +1,47 @@
+.content{
+    width: 90%;
+}
+
+.forms {
+    width: 30%;
+    height: 55vh;
+    margin-right: 10px;
+    float: right;
+    margin-top: -350px;
+    font-size: 15px;
+}
+
+.text-danger{
+    color: red;
+    font-size: 0.975em;
+}
+.container{
+    height: 76vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.container-2{
+    height: 50vh;
+}
+
+.custom-btn{
+    background-color: #FCA311;
+}
+
+.blob{
+    width: 40%;
+    flex: 0 0 25%;
+    border-radius: 50%;
+    background-color: hsla(60, 100%, 73%, 0.57);
+    margin-left: 140px;
+    margin-top: 140px;
+}
+
+.man-with-dog img{
+    width: 68%;
+    margin-top: -55px;
+    margin-left: 100px;
+}

@@ -1,0 +1,120 @@
+from flask import Flask, render_template,session,redirect,abort, request,flash
+from google_auth_oauthlib.flow import Flow
+from flask_mail import Mail,Message
+from flask_login import LoginManager, login_user, logout_user
+from werkzeug.security import generate_password_hash
+from models import Users,RegistrationForm,db
+from random import *
+import pathlib,os
+from flask_bcrypt import Bcrypt
+from pathlib import Path
+
+bcrypt = Bcrypt()
+
+app = Flask(__name__)
+
+app.secret_key = "MyGoogleSAuth"
+
+mail = Mail(app)
+
+otp =randint(000000,999999)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///owners.db"
+
+db.init_app(app)
+
+
+@login_manager.user_loader
+def loader_user(user_id):
+    return Users.query.get(user_id)
+
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'iamhawiana@gmail.com'
+app.config['MAIL_PASSWORD'] = 'txcifdzuofrgches'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.secret_key = 'myfishsucksmiamiaa'
+
+
+GOOGLE_CLIENT_ID = "424196244864-nu66a5mtbn7odic7ekrcoaugqpjkvphp.apps.googleusercontent.com"
+client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
+
+flow = Flow.from_client_secrets_file(
+    client_secrets_file,  # Path to the client_secret.json file
+    scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
+    redirect_uri="http://127.0.0.1:5000/home"
+)
+
+
+@app.route("/home")
+def landing_page():
+    return render_template ("landing.html")
+
+@app.route('/redirect', methods=["GET","POST"])
+def checker():
+    if request.method == "POST":
+        fullname = request.form.get("Fullname")
+        email = request.form.get("Email")
+        return render_template('show.html', fullname=fullname,email=email)
+    
+    return ('hi there')
+
+@app.route('/register', methods=["GET", "POST"])
+def signup():
+  # If the user made a POST request, create a new user
+    form = RegistrationForm(request.form)
+    if form.validate() :
+        user = Users(Fullname = form.Fullname.data, Email = form.Email.data,Password= form.Password.data)
+        db.session.add(user)
+        db.session.commit() 
+        return render_template('landing.html')
+    
+    return render_template("forms/SignInUp.html", form=form)
+
+@app.route("/auth", methods=["GET", "POST"])
+def login():
+    return render_template("forms/SignInUp.html")
+
+@app.route("/google_auth")
+def authenticate():
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    return redirect (authorization_url)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect ("/")
+
+
+with app.app_context():
+    db.create_all()
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+
+
+
+
+
+        # fullname = request.form['Fullname']
+        # email = request.form['Email']
+        # password = request.form['Password']
+        # hashed_password = bcrypt.generate_password_hash(form.password.data)
+        # owner = Users(fullname=form.fullname.data,email = form.email.data,password=hashed_password)
+        # db.session.add(owner)     
+        # db.session.commit() 
+        
+       
+        #send verification email
+        # email = request.form['email']
+        # msg = Message(subject="OTP", sender='iamhawiana@gmail.com',recipients=[email])
+        # msg.body = str(otp)
+        # mail.send(msg)      
+        # return render_template ('landing.html') 
