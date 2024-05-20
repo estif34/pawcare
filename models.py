@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin
 from flask_bcrypt import Bcrypt
 from wtforms import StringField, PasswordField, SubmitField,Form,validators
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -26,7 +26,15 @@ class Users(UserMixin, db.Model):
 # Registration form
 class RegistrationForm(Form):
     Fullname = StringField('Fullname', validators=[Length(min=2, max=20)])
-    Email = StringField('Email', [validators.Length(min=6, max=35)])
-    Password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=20)])
-    Confirm_Password = PasswordField('Confirm_Password', validators=[DataRequired(), EqualTo('Password', message="Passwords must match")])
+    Email = StringField('Email', [DataRequired(),Email()])
+    Password = PasswordField('Password', validators=[Length(min=6, max=20)])
+    Confirm_Password = PasswordField('Confirm_Password', validators=[DataRequired(), EqualTo('Password')])
     # submit = SubmitField('Create Account')
+
+    def validate_Email(self, field):
+        if Users.query.filter_by(Email=field.data).first():
+            raise ValidationError('Email already registered. Please choose a different one.')
+        
+    def validate_Password(self, field):
+        if self.Password.data != self.Confirm_Password.data:
+            raise ValidationError('Passwords must match.')

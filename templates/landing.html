@@ -3,49 +3,43 @@
 {% block content %}
 
 <div class="main">
-<div class="land-navigation">
-    <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;"  data-mdb-theme="light" >
-        <!-- Container wrapper -->
-  
-        <div class="container-fluid">
-          <!-- Toggle button -->
-          <button
-            data-mdb-collapse-init
-            class="navbar-toggler"
-            type="button"
-            data-mdb-target="#navbarCenteredExample"
-            aria-controls="navbarCenteredExample"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <i class="fas fa-bars"></i>
-          </button>
-      
-          <li>
-            <span style="float:left;font-weight: 700; font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 26px;">
-                <a class="nav-link" href="#">PetCo </a> </span>   
+  <div class="land-navigation">
+    <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
+      <!-- Container wrapper -->
+
+      <div class="container-fluid">
+        <!-- Toggle button -->
+        <button data-mdb-collapse-init class="navbar-toggler" type="button" data-mdb-target="#navbarCenteredExample"
+          aria-controls="navbarCenteredExample" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <li>
+          <span
+            style="float:left;font-weight: 700; font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 26px;">
+            <a class="nav-link" href="#">PetCo </a> </span>
+        </li>
+
+
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
+          <!-- Left links -->
+          <ul class="navbar-nav mb-1 mb-lg-0">
+
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About </a>
             </li>
 
-    
-           
-          <!-- Collapsible wrapper -->
-          <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample" >
-            <!-- Left links -->
-            <ul class="navbar-nav mb-1 mb-lg-0">
-           
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">About </a>
-              </li>
+            <li class="nav-item">
+              <a style="color:#FCA311;" class="nav-link" href=" /register">Login</a>
+            </li>
 
-              <li class="nav-item">
-                <a class="nav-link" href=" /register">Login</a>
-              </li>
-
-              <!-- Navbar dropdown -->
-              <!-- <li class="nav-item dropdown">
+            <!-- Navbar dropdown -->
+            <!-- <li class="nav-item dropdown">
                 <a
                   data-mdb-dropdown-init
                   class="nav-link dropdown-toggle"
@@ -56,8 +50,8 @@
                 >
                   Dropdown
                 </a> -->
-                <!-- Dropdown menu -->
-                <!-- <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <!-- Dropdown menu -->
+            <!-- <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <li>
                     <a class="dropdown-item" href="#">Action</a>
                   </li>
@@ -70,52 +64,79 @@
                   </li>
                 </ul>
               </li> -->
-<!--              
+            <!--              
                 <span style="font-family:Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 18px;">
                     <a class="nav-link" href="#">Create Account </a> </span>        -->
 
-              <li class="nav-item">
-                <!-- <a class="nav-link disabled"
+            <li class="nav-item">
+              <!-- <a class="nav-link disabled"
                   >Disabled</a
                 > -->
-              </li>
-            </ul>
-            <!-- Left links -->
-          </div>
-          <!-- Collapsible wrapper -->
+            </li>
+          </ul>
+          <!-- Left links -->
         </div>
-        <!-- Container wrapper -->
-      </nav>
+        <!-- Collapsible wrapper -->
+      </div>
+      <!-- Container wrapper -->
+    </nav>
 
-    </div>
+  </div>
 
-<section class="land-container">
+  <section class="land-container">
 
 
     <div class="better-health">
-        <h3> BETTER <span style="color:#FCA311;"> HEALTHCARE </span>FOR YOUR PETS </h3>
+      <h3> BETTER <span style="color:#FCA311;"> HEALTHCARE </span>FOR YOUR PETS </h3>
 
     </div>
 
     <div class="treat-pet">
-        <h5>Treat your pet to unlimited health care servies, schedule appointments and connect with a veterinary today </h5>    
+      <h5>Treat your pet to unlimited health care servies, schedule appointments and connect with a veterinary today
+      </h5>
     </div>
 
-    <div class = "numbers">
-        <h4 style=" color: #FCA311"> 100% </h4>
+    <div class="numbers">
+      <h4 style=" color: #FCA311"> 100% </h4>
 
-        <h4> 10K+ </h4>
+      <h4> 10K+ </h4>
 
-        <h4> 30K </h4>
+      <h4> 30K </h4>
     </div>
 
     <div>
-        <div class="doggie">
-            <img src="{{ url_for('static', filename='images/bernard.png') }}" id="dog"/>
-        </div>
+      <div class="doggie">
+        <img src="{{ url_for('static', filename='images/bernard.png') }}" id="dog" />
+      </div>
     </div>
-   
-</section>
+
+  </section>
+
+  <section class="page2">
+
+    <div class="choose-petco"> <h2> Flexible, Trustworthy & Reliable Care For Your Pet </h2> </div>
+
+    <div class="base-orange">
+      <div class="box1">
+        <img src="{{ url_for('static', filename='images/man-holding-dog.png') }}" class="man-with-dog" />
+      </div>
+
+      <div class="box2">
+        <p> We do our due diligence in ensuring you and your pet get the best care and service at affordable prices. </p>
+
+        <button type="submit"
+        class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm login-btn"> Services </button>
+      </div>
+  
+      <div class="box3">
+        <img src="{{ url_for('static', filename='images/pet-cross.png') }}" style="width: 40%;margin-top: 30px;"/>
+        <p> We love pets too!  To our due diligence in ensuring you the best quality services </p>
+      </div>
+
+    </div>
+
+    
+  </section>
 
 </div>
 

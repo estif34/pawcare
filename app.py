@@ -1,4 +1,4 @@
-from flask import Flask, render_template,session,redirect,abort, request,flash
+from flask import Flask, render_template,session,redirect,abort, request,flash,g,url_for
 from google_auth_oauthlib.flow import Flow
 from flask_mail import Mail,Message
 from flask_login import LoginManager, login_user, logout_user
@@ -51,7 +51,12 @@ flow = Flow.from_client_secrets_file(
     redirect_uri="http://127.0.0.1:5000/home"
 )
 
+def get_db():
+    if 'db' not in g:
+        g.db = db
+    return g.db
 
+# ROUTES 
 @app.route("/")
 def landing_page():
     return render_template ("landing.html")
@@ -74,7 +79,8 @@ def signin():
         Email = request.form.get("Email")
         Password = request.form.get("Password")
         user = Users.query.filter_by(Email=Email).first()
-    
+        # db = get_db()
+        
         if user and user.check_password(Password):
             login_user(user)
             flash('Login successful!', 'success') 
@@ -90,6 +96,33 @@ def signin():
     
     return render_template("forms/SignInUp.html")
 
+@app.route('/register', methods=["GET", "POST"])
+def signup():
+#  If the user made a POST request, create a new user
+    form = RegistrationForm(request.form)
+    if form.validate() :
+        user = Users(Fullname = form.Fullname.data, Email = form.Email.data,Password= form.Password.data)
+        
+        #Add validated credentials to the database
+        db.session.add(user)
+        db.session.commit()  
+
+        # Send email with mail credentials at the top
+        otp_str = str(otp)
+        Email = request.form['Email']
+        EmailContent = render_template("email.html", otp=otp_str)
+        msg = Message(subject="Welcome to PetCo", sender='iamhawiana@gmail.com', recipients=[Email])
+        msg.html = EmailContent
+
+        mail.send(msg)   
+
+        flash('Email has been sent your account', 'primary')
+        return render_template ('verify.html', otp=otp) 
+    
+    else:
+        flash("Invalid credentials", "danger")
+    
+    return render_template("/forms/SignInUp.html", form=form)
 
 @app.route('/reset', methods=["GET","POST"])
 def reset():
@@ -100,26 +133,6 @@ def forgot():
     return render_template("forms/forgot-password.html")
 
 
-@app.route('/register', methods=["GET", "POST"])
-def signup():
-  # If the user made a POST request, create a new user
-    form = RegistrationForm(request.form)
-    if form.validate() :
-        user = Users(Fullname = form.Fullname.data, Email = form.Email.data,Password= form.Password.data)
-        db.session.add(user)
-        db.session.commit()  # Adds user in validated form to the db
-
-        # Send email with mail credentials at the top
-       
-        Email = request.form['Email']
-        msg = Message(subject="OTP", sender='iamhawiana@gmail.com',recipients=[Email])
-        msg.body = str(otp)
-        mail.send(msg)     
-
-        flash('Email has been sent your account', 'primary')
-        return render_template ('verify.html', otp=otp) 
-    
-    return render_template("forms/SignInUp.html", form=form)
 
 @app.route("/auth", methods=["GET", "POST"])
 def login():
