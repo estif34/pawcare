@@ -8,13 +8,8 @@
     height: 55vh;
     margin-right: 90px;
     float: right;
-    margin-top: -540px;
+    margin-top: -550px;
     font-size: 15px;
-}
-
-.error{
-    color: red;
-    font-size: 0.975em;
 }
 
 .flashes{
@@ -43,18 +38,13 @@
 .container{
     height: 76vh;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 30px;
     border-radius: 10px;
-
     position: relative;
 }
 
 .container-2{
     height: 50vh;
-}
-
-.custom-btn{
-    background-color: #FCA311;
 }
 
 .blob{
@@ -64,11 +54,58 @@
     /* border-radius: 40%; */
     background-color: hsla(60, 93%, 68%, 0.57); 
     margin-left: 1px;
-    margin-top: 1px;
+    margin-top: -15px;
 }
 
 .man-with-dog img{
-    width: 70%;
+    width: 100%;
     margin-top: 75px;
     margin-left: 90px;
+}
+
+#ex1{
+    margin-top: -10px;
+}
+
+.errors{
+    font-size: 13px;
+}
+
+.google-btn{
+    width: 60%;
+    color: white;
+    background-color: #000000;
+    margin-left: 73px;
+}
+
+.custom-btn{
+    background-color: #FCA311;
+    width: 60%;
+    margin-left: 73px;
+}
+
+.custom-btn:hover{
+    background-color: #000000;
+}
+
+
+.google-btn:hover{
+    background-color: #FCA311;
+}
+
+#tab-login{
+    line-height: 0.08em;
+    border-radius: 12px;
+}
+
+#tab-register{
+    line-height: 0.08em;
+    border-radius: 12px;
+}
+
+.background{
+    height: 5vh;
+    background-color: rgb(255, 255, 255);
+    position: relative;
+    size: 140%;
 }
