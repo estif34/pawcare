@@ -51,10 +51,6 @@ flow = Flow.from_client_secrets_file(
     redirect_uri="http://127.0.0.1:5000/home"
 )
 
-def get_db():
-    if 'db' not in g:
-        g.db = db
-    return g.db
 
 # ROUTES 
 @app.route("/")
@@ -92,7 +88,7 @@ def signin():
             
     else:
         if "user" in session:
-            return redirect('/')  # Redirect to landing instead of render_template
+            return redirect('/home')  # Redirect to landing instead of render_template
     
     return render_template("/forms/SignInUp.html")
 
@@ -123,6 +119,11 @@ def signup():
         # flash("Invalid credentials", "danger")
     
     return render_template("/forms/SignInUp.html", form=form)
+
+@app.route('/home', methods=["GET","POST"])
+def home():
+    return render_template("home.html")
+
 
 @app.route('/reset', methods=["GET","POST"])
 def reset():

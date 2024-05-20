@@ -1,0 +1,193 @@
+
+.land-container{
+    margin-top: 200px;
+    column-count: 2;
+    column-width: 40%;
+    border: 0;
+    min-height: 70vh;
+    margin-left: 45px;
+}
+
+.container-fluid{
+    height: 5vh;
+    border-bottom: none;
+    box-shadow: none;
+}
+
+#land-navigation{
+    border-bottom: none;
+    box-shadow: none;
+}
+
+#navbarCenteredExample {
+    box-shadow: none;
+    height: 6vh;
+    color: #c5a9a9;
+    border: 0;
+
+    a {
+        margin-top: 10px;
+        color: black;
+        font-size: 18px;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+    }
+
+    li{
+        margin-right: 15px;
+    }
+}
+
+.create-acc{
+    a{
+        color: hsla(60, 100%, 50%, 0.57);
+    };
+    border-radius: 10px;
+    height: 4vh;
+}
+
+
+.better-health {
+    h3{
+        font-size: 40px;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+        font-weight: bold;
+        color: black;
+        letter-spacing: 0.03em;
+    }
+}
+
+.doggie{
+    /* border-radius:71% 29% 67% 33% / 37% 64% 36% 63% ;  */
+    border-radius: 70% 30% 67% 33% / 59% 34% 66% 41%  ;
+    background-color: rgb(247, 245, 131);
+    float: right;
+    margin-top: -70px;
+    margin-right: 90px;
+    width: 80%;
+
+    img{
+        width: 100%;
+        margin-top: 10px;
+        margin-left: -20px;
+    }
+}
+
+.treat-pet{
+    color: black;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    font-family: 'Franklin Gothic Light', 'Arial Narrow', Arial, sans-serif; 
+    min-height: 20vh;
+}
+
+.numbers{
+    display: flex;
+    float: left;
+    
+    h4{
+        margin: 40px;
+        font-weight: bolder;
+        margin-top: -20px;
+        color: black;
+    }
+}
+
+.page2{
+    height: 90vh;
+    text-align: center;
+    background-color: #ffffff;
+    width: 95%;
+    margin-top: -20px;
+    margin-left: 40px;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    
+}
+
+.base-orange{
+    /* background-color:  rgb(247, 245, 131); */
+    height: 30vh;
+    border-radius: 30px;
+    width: 95%;
+    padding: 20px auto;
+    display: flex;
+    margin-left: 40px;
+
+    .box1 , .box2{
+        position: relative;
+        margin: 20px;
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 100px;
+        height: 50vh
+    }
+}
+
+.box1{
+    background-color: #c9f681;
+    width: 50%;
+}
+
+.box2{
+    width: 45%;
+    padding: 10px auto;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    text-align: left;
+    p{
+        margin-top: 88px;
+        color: #000;
+        margin-left: 10px;
+        font-size: 18px;
+        padding: 20px;
+    }
+}
+
+.man-with-dog{
+    width:70%;
+    margin-top: 12px;
+    position: relative;
+}
+
+.login-btn{
+    width: 40%;
+    background-color: #FCA311;
+    margin-left: 80px;
+}
+
+.box3{
+    margin: 20px;
+    width: 34%;
+    margin-top: 100px;
+    height: 50vh;
+    border-radius: 30px;
+    background-color: #FCA311;
+    p{
+        margin-top: 8px;
+        color: #000;
+        justify-content: left;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: 15px;
+        padding: 20px;
+    }
+}
+
+.choose-petco{
+    margin-left: 30px;
+    width: 40%;
+    float: left;
+    justify-content: left;
+    height: 8vh;    
+    margin-top: 10px;
+    padding-top: 10px;
+
+    h2{
+        margin-top: 20px;
+        color:  #FCA311;
+        letter-spacing: 0.03em;
+        text-align: left;
+        font-weight: 700;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }}
+
