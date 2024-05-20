@@ -25,15 +25,15 @@ class Users(UserMixin, db.Model):
 
 # Registration form
 class RegistrationForm(Form):
-    Fullname = StringField('Fullname', validators=[Length(min=2, max=20)])
+    Fullname = StringField('Fullname', validators=[DataRequired()])
     Email = StringField('Email', [DataRequired(),Email()])
-    Password = PasswordField('Password', validators=[Length(min=6, max=20)])
+    Password = PasswordField('Password', validators=[Length(min=6)])
     Confirm_Password = PasswordField('Confirm_Password', validators=[DataRequired(), EqualTo('Password')])
     # submit = SubmitField('Create Account')
 
     def validate_Email(self, field):
         if Users.query.filter_by(Email=field.data).first():
-            raise ValidationError('Email already registered. Please choose a different one.')
+            raise ValidationError('Email already exists')
         
     def validate_Password(self, field):
         if self.Password.data != self.Confirm_Password.data:

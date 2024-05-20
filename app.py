@@ -59,6 +59,7 @@ def get_db():
 # ROUTES 
 @app.route("/")
 def landing_page():
+    flash('Login successful!', 'success') 
     return render_template ("landing.html")
 
 @app.route('/auth-checker/<otp>', methods=["GET","POST"])
@@ -83,7 +84,6 @@ def signin():
         
         if user and user.check_password(Password):
             login_user(user)
-            flash('Login successful!', 'success') 
             return redirect('/')  # Redirect to landing instead of render_template
         
         else:
@@ -94,7 +94,7 @@ def signin():
         if "user" in session:
             return redirect('/')  # Redirect to landing instead of render_template
     
-    return render_template("forms/SignInUp.html")
+    return render_template("/forms/SignInUp.html")
 
 @app.route('/register', methods=["GET", "POST"])
 def signup():
@@ -119,8 +119,8 @@ def signup():
         flash('Email has been sent your account', 'primary')
         return render_template ('verify.html', otp=otp) 
     
-    else:
-        flash("Invalid credentials", "danger")
+    #else:
+        # flash("Invalid credentials", "danger")
     
     return render_template("/forms/SignInUp.html", form=form)
 

@@ -12,14 +12,15 @@
   <div class="blob">
 
     <div class="man-with-dog">
-      <img src="{{ url_for('static', filename='images/Veterinary.png') }}" id="man-with-dog" />
+      <img src="{{ url_for('static', filename='images/Veterinary.png') }}" id="vet" />
     </div>
 
   </div>
 
   <div class="forms">
     <h2
-      style="margin-left: 84px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;margin-top: -20px; margin-bottom: 20px; font-size: 20px;letter-spacing: 0.03em;">
+      style="margin-left: 124px;color:black;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin-top: -16px; margin-bottom: 10px; font-size: 21px;letter-spacing: 0.03em;">
+      Let's Get Started!
     </h2>
     <div class="container">
 
@@ -53,22 +54,17 @@
         <div class="tab-pane fade show active mt-2" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
           <form action="/login" method="POST">
             <!-- Login form content -->
+
             <!-- Email input -->
             <div data-mdb-input-init class="form-outline mb-3 mt-2">
               <input type="email" id="loginName" name="Email" class="form-control" />
               <label class="form-label" for="loginName">Email</label>
-              <!-- {% if error %}
-          <p class=error><strong>Error:</strong> {{ error }}
-        {% endif %} -->
             </div>
 
             <!-- Password input -->
             <div data-mdb-input-init class="form-outline mb-4">
               <input type="password" id="loginPassword" name="Password" class="form-control" />
               <label class="form-label" for="loginPassword">Password</label>
-              <!-- {% if error %}
-          <p class=error><strong>Error:</strong> {{ error }}
-        {% endif %} -->
             </div>
 
             <!-- 2 column grid layout -->
@@ -89,13 +85,18 @@
 
             <!-- Submit button -->
             <button type="submit"
-              class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm custom-btn"> Login </button>
+              class="btn btn-primary btn-block text-uppercase mb-3 mt-4 rounded-pill shadow-sm custom-btn"> Login
+            </button>
           </form>
 
           <p class="text-center">or </p>
 
-          <div class="text-center mb-3 mt-2">
-            <!-- <p>Sign in with:</p> -->
+          <div>
+            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 mt-1 rounded-pill shadow-sm google-btn">Sign Up with Google
+            </button>
+          </div>
+
+          <!-- <div class="text-center mb-3 mt-2">
             <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
               <i class="fab fa-facebook-f" style="color: black;"></i>
             </button>
@@ -108,7 +109,7 @@
               <i class="fab fa-twitter" style="color: black;"></i>
             </button>
 
-          </div>
+          </div> -->
 
         </div>
 
@@ -117,59 +118,67 @@
             <!-- Registration form content -->
 
             <!-- Name input -->
+            <div class="errors">
+              {% for error in form.Fullname.errors %}
+              <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+            </div>
             <div data-mdb-input-init class="form-outline mb-3 mt-2">
               <input type="text" id="registerName" name="Fullname" class="form-control" maxlength="250" />
-              <label class="form-label" for="registerName">Name</label>
+              <label class="form-label" for="registerName">Fullname</label>
             </div>
-            {% for error in form.Fullname.errors %}
-            <span class="text-danger">{{ error }}</span>
-            {% endfor %}
+
 
             <!-- Email input -->
+            <div class="errors">
+              {% for error in form.Email.errors %}
+              <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+            </div>
             <div data-mdb-input-init class="form-outline mb-3">
               <input type="email" id="registerEmail" name="Email" class="form-control" />
               <label class="form-label" for="registerEmail">Email</label>
             </div>
-            {% for error in form.Email.errors %}
-            <span class="text-danger">{{ error }}</span>
-            {% endfor %}
-
 
             <!-- Password input -->
+            <div class="errors">
+              {% for error in form.Password.errors %}
+              <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+            </div>
             <div data-mdb-input-init class="form-outline mb-3">
               <input type="password" id="registerPassword" name="Password" class="form-control" min="6" max="200" />
               <label class="form-label" for="registerPassword">Password</label>
             </div>
-            {% for error in form.Password.errors %}
-            <span class="text-danger">{{ error }}</span>
-            {% endfor %}
-
-
+          
             <!-- Repeat Password input -->
+            <div class="errors">
+              {% for error in form.Confirm_Password.errors %}
+              <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+            </div>
             <div data-mdb-input-init class="form-outline mb-3">
               <input type="password" id="registerRepeatPassword" name="Confirm_Password" class="form-control" />
               <label class="form-label" for="registerRepeatPassword">Confirm password</label>
             </div>
 
-            <!-- Checkbox -->
-            <div class="form-check d-flex justify-content-center mb-4">
-              <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
-                aria-describedby="registerCheckHelpText" />
-              <label class="form-check-label" for="registerCheck">
-                I have read and agree to the terms
-              </label>
-            </div>
-
-
             <button type="submit"
-              class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm custom-btn">Create
+              class="btn btn-primary btn-block text-uppercase mb-3 mt-4 rounded-pill shadow-sm custom-btn">Create
               Account</button>
           </form>
 
-          <!-- <p class="text-center mb-1"> or </p> -->
+          <div class="background">
+            <p class="text-center"> or </p>
+          </div>
+         
 
+          <div>
+            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 mt-2 rounded-pill shadow-sm google-btn">Sign Up with Google
+            </button>
+          </div>
+<!-- 
           <div class="text-center mt-1 mb-1">
-            <!-- <p>Sign up with:</p> -->
+        
             <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-link btn-floating mx-1">
               <i class="fab fa-facebook-f" style="color: black;"></i>
             </button>
@@ -182,7 +191,7 @@
               <i class="fab fa-twitter" style="color: black;"></i>
             </button>
 
-          </div>
+          </div> -->
 
         </div>
       </div>
@@ -197,18 +206,3 @@
 </div>
 
 {% endblock %}
-
-<!-- {% macro render_field(field) %}
-  <dt>{{ field.label }}
-  <dd>{{ field(**kwargs)|safe }}
-  {% if field.errors %}
-    <ul class=errors>
-    {% for error in field.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-  </dd>
-{% endmacro %}
-         -->
-<!-- Submit button -->
