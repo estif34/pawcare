@@ -3,8 +3,7 @@ PetCo is a Flask based web application used to help pet owners in Kenya have eas
 SETUP 
 
 Run the following commands to setup the project
- - pip install Flask (to run the Flask support)
 
- - pip install Flask-OAuthlib (for Google Authentication support)
+- pip install -r requirements.txt
 
-See requirements.txt file for other support commands!
+
