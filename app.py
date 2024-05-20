@@ -19,8 +19,6 @@ app.secret_key = "MyGoogleSAuth"
 def check_password(self,Password):
     return bcrypt.check_password_hash(self.Password, Password)
 
-
-
 otp =randint(000000,999999)
 
 login_manager = LoginManager()
@@ -92,6 +90,12 @@ def signin():
     
     return render_template("forms/SignInUp.html")
 
+
+@app.route('/reset-password', methods=["GET","POST"])
+def reset():
+
+
+    return render_template("reset-password.html")
 
 
 @app.route('/register', methods=["GET", "POST"])
