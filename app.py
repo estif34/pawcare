@@ -91,11 +91,13 @@ def signin():
     return render_template("forms/SignInUp.html")
 
 
-@app.route('/reset-password', methods=["GET","POST"])
+@app.route('/reset', methods=["GET","POST"])
 def reset():
+    return render_template("forms/reset-password.html")
 
-
-    return render_template("reset-password.html")
+@app.route('/forgot', methods=["GET","POST"])
+def forgot():
+    return render_template("forms/forgot-password.html")
 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -143,24 +145,3 @@ with app.app_context():
 if __name__ == "__main__":
     app.run(debug=True)
 
-
-
-
-
-
-
-        # fullname = request.form['Fullname']
-        # email = request.form['Email']
-        # password = request.form['Password']
-        # hashed_password = bcrypt.generate_password_hash(form.password.data)
-        # owner = Users(fullname=form.fullname.data,email = form.email.data,password=hashed_password)
-        # db.session.add(owner)     
-        # db.session.commit() 
-        
-       
-        #send verification email
-        # email = request.form['email']
-        # msg = Message(subject="OTP", sender='iamhawiana@gmail.com',recipients=[email])
-        # msg.body = str(otp)
-        # mail.send(msg)      
-        # return render_template ('landing.html') 
