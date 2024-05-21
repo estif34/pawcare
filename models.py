@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin
+from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
 from wtforms import StringField, PasswordField, SubmitField,Form,validators
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
@@ -24,17 +25,27 @@ class Users(UserMixin, db.Model):
 
 
 # Registration form
-class RegistrationForm(Form):
+class RegistrationForm(FlaskForm):
     Fullname = StringField('Fullname', validators=[DataRequired()])
-    Email = StringField('Email', [DataRequired(),Email()])
+    Email = StringField('Email', [Email(),DataRequired()])
     Password = PasswordField('Password', validators=[Length(min=6)])
-    Confirm_Password = PasswordField('Confirm_Password', validators=[DataRequired(), EqualTo('Password')])
-    # submit = SubmitField('Create Account')
+    Confirm_Password = PasswordField('Confirm_Password', validators=[DataRequired()])
+    Submit = SubmitField('Create_Account')
 
     def validate_Email(self, field):
         if Users.query.filter_by(Email=field.data).first():
             raise ValidationError('Email already exists')
         
     def validate_Password(self, field):
-        if self.Password.data != self.Confirm_Password.data:
-            raise ValidationError('Passwords must match.')
+        if field.data != self.Confirm_Password.data: 
+            raise ValidationError('Passwords must match')
+
+class LoginForm(FlaskForm):
+    Email = StringField('Email', [DataRequired()])
+    Password = PasswordField('Password', validators=[Length(min=6)])
+    Submit = SubmitField('Login')
+     
+    def validate_Password(self, field):
+        user = Users.query.filter_by(Email=self.Email.data).first()
+        if not user or not user.check_password(field.data):
+            raise ValidationError('Invalid email or password')

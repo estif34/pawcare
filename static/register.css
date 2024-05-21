@@ -4,7 +4,7 @@
     
 }
 
-.forms {
+.forms {  /*whole form*/
     width: 35%;
     height: 70vh;
     margin-right: 90px;
@@ -46,9 +46,10 @@
     position: relative;
 }
 
-.container-2{
+/* .container-2{
     height: 50vh;
-}
+    background-color: #004085;
+} */
 
 .blob{
     width: 50%;
@@ -66,9 +67,9 @@
     margin-left: 90px;
 }
 
-#ex1{
+/* #ex1{
     margin-top: -10px;
-}
+} */
 
 .errors{
     font-size: 12px;
@@ -86,25 +87,13 @@
     background-color: #FCA311;
     width: 60%;
     margin-left: 73px;
+    margin-top: -10px;
 } 
 
 .custom-btn:hover{
     background-color: #000000;
 }
 
-.forgot{
-    width: 100%;
-    text-align: left;
-    font-size: 15px;
-    column-count: 2;
-    margin-left: 5px;
-    margin: 14px;
-    display: flex;
-}
-
-.tab-content{
-    height: 60vh;
-}
 
 .google-btn:hover{
     background-color: #FCA311;
@@ -137,8 +126,12 @@
     z-index: 1;
 }
 
-.reg-btn{
-    /* margin-top: -50px; */
-    background-color: #155724;
+.input-menu{
+    margin-top: 14px;
+}
+
+.reg-btns{
+    margin-top: -10px;
+    padding: 10px;
 
 }
