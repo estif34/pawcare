@@ -43,7 +43,7 @@ app.secret_key = 'myfishsucksmiamiaa'
 mail = Mail(app)
 
 
-GOOGLE_CLIENT_ID = "424196244864-nu66a5mtbn7odic7ekrcoaugqpjkvphp.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = ""
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
 
 flow = Flow.from_client_secrets_file(
