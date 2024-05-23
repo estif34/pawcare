@@ -84,7 +84,7 @@
             </div>
             <!-- Collapsible wrapper -->
         </div>
-        
+
         <div class="menu">
             <div class="nav-item">
                 <a style="color:#FCA311; font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin-left:30px;"
@@ -93,48 +93,75 @@
             <br />
             <div class="nav-item">
                 <a style="color:#FCA311; font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"
-                    class="nav-link" href=" /register">Log out</a>
+                    class="nav-link" data-mdb-ripple-init data-mdb-modal-init  data-mdb-target="#staticBackdrop">Log out</a>
             </div>
 
 
         </div>
-       
+
         <!-- Container wrapper -->
     </nav>
 
+    <!-- Button trigger modal -->
+    <!-- <button type="button" class="btn btn-primary" data-mdb-ripple-init data-mdb-modal-init
+        data-mdb-target="#staticBackdrop">
+        Launch static backdrop modal
+    </button> -->
 
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-mdb-backdrop="static" data-mdb-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="staticBackdropLabel" style="font-weight: 600;text-align: center;">Are you sure you want to Log Out? </h6>
+                    <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body"> If you do decide to Log Out, all your session will be lost</div>
+                <div class="modal-footer">
+                    <button type="button" style="background-color:#000000; color:#ffffff;" class="btn btn-secondary" data-mdb-ripple-init
+                        data-mdb-dismiss="modal">  No, return to session</button>
+                    <button type="button" style="background-color:#FCA311 ;" class="btn btn-primary" data-mdb-ripple-init href=" /register" >Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="illustration">
         <div class="vet">
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"> 
-                <path fill="#00000" d="M52.3,-62.8C67.2,-49.8,78.3,-32.8,82.4,-13.8C86.6,5.1,83.8,26,73.5,41.2C63.3,56.5,45.5,66.2,26.9,72.3C8.4,78.3,-10.9,80.7,-24.7,73.3C-38.4,65.9,-46.6,48.7,-56.3,32.3C-66,15.8,-77.4,0.1,-75.7,-14C-74,-28.2,-59.4,-40.8,-44.6,-53.8C-29.8,-66.8,-14.9,-80.2,1.9,-82.5C18.7,-84.8,37.4,-75.8,52.3,-62.8Z" transform="translate(100 100)" />
-              </svg>
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#00000"
+                    d="M52.3,-62.8C67.2,-49.8,78.3,-32.8,82.4,-13.8C86.6,5.1,83.8,26,73.5,41.2C63.3,56.5,45.5,66.2,26.9,72.3C8.4,78.3,-10.9,80.7,-24.7,73.3C-38.4,65.9,-46.6,48.7,-56.3,32.3C-66,15.8,-77.4,0.1,-75.7,-14C-74,-28.2,-59.4,-40.8,-44.6,-53.8C-29.8,-66.8,-14.9,-80.2,1.9,-82.5C18.7,-84.8,37.4,-75.8,52.3,-62.8Z"
+                    transform="translate(100 100)" />
+            </svg>
             <img src="{{ url_for('static', filename='images/Vet-pana.png') }}" class="vet-dog" />
-            
+
         </div>
 
         <div class="row">
-            
-        <div class="column1">
-            <p> Book Appointment</p>
-        </div>
 
-        <div class="column2">
-            <p> Add New Pet </p>
-        </div>
+            <div class="column1">
+                <p> Book Appointment</p>
+            </div>
 
-        <div class="column3">
-            <p> Find veterinarian </p>
-        </div>
+            <div class="column2">
+                <p> Add New Pet </p>
+            </div>
 
-        <div class="column4">
-            <p> Schedule Vaccination</p>
-        </div>
+            <div class="column3">
+                <p> Find veterinarian </p>
+            </div>
+
+            <div class="column4">
+                <p> Schedule Vaccination</p>
+            </div>
 
         </div>
 
         <div class="txt">
-            <p> We love pets too! Now you can book appointments, schedule vaccinations and easily connect 
-                with a verterinary doctor today! Explore our services and give your pet the ultimate healthcare it deserves</p>
+            <p> We love pets too! Now you can book appointments, schedule vaccinations and easily connect
+                with a verterinary doctor today! Explore our services and give your pet the ultimate healthcare it
+                deserves</p>
         </div>
 
 

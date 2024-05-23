@@ -4,6 +4,7 @@ from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
 from wtforms import StringField, PasswordField, SubmitField,Form,validators
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+import re
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -27,7 +28,7 @@ class Users(UserMixin, db.Model):
 # Registration form
 class RegistrationForm(FlaskForm):
     Fullname = StringField('Fullname', validators=[DataRequired()])
-    Email = StringField('Email', [Email(),DataRequired()])
+    Email = StringField('Email', [Email()])
     Password = PasswordField('Password', validators=[Length(min=6)])
     Confirm_Password = PasswordField('Confirm_Password', validators=[DataRequired()])
     Submit = SubmitField('Create_Account')
@@ -39,13 +40,33 @@ class RegistrationForm(FlaskForm):
     def validate_Password(self, field):
         if field.data != self.Confirm_Password.data: 
             raise ValidationError('Passwords must match')
+        else:
+            if not re.search(r"[A-Z]", field.data):
+                raise ValidationError('Password must contain at least one uppercase letter.')
+            else:
+                if not re.search(r"[0-9]", field.data):
+                    raise ValidationError('Password must contain at least one number.')
+
+        
+    # def password_contains_uppercase(form, field):
+    #     if not re.search(r"[A-Z]", field.data):
+    #         raise ValidationError('Password must contain at least one uppercase letter.')
+
+    # def password_contains_number(form, field):
+    #     if not re.search(r"[0-9]", field.data):
+    #         raise ValidationError('Password must contain at least one number.')
 
 class LoginForm(FlaskForm):
-    Email = StringField('Email', [DataRequired()])
-    Password = PasswordField('Password', validators=[Length(min=6)])
+    Email = StringField('Email')
+    Password = PasswordField('Password')
     Submit = SubmitField('Login')
+
+    def validate_Email(self, field):
+        if not Users.query.filter_by(Email=field.data).first():
+            raise ValidationError('Invalid email')
+        
      
     def validate_Password(self, field):
         user = Users.query.filter_by(Email=self.Email.data).first()
         if not user or not user.check_password(field.data):
-            raise ValidationError('Invalid email or password')
+            raise ValidationError('Invalid password')

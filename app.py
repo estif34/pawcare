@@ -42,6 +42,7 @@ app.config['MAIL_USE_SSL'] = True
 app.secret_key = 'myfishsucksmiamiaa'
 mail = Mail(app)
 
+
 GOOGLE_CLIENT_ID = "424196244864-nu66a5mtbn7odic7ekrcoaugqpjkvphp.apps.googleusercontent.com"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client_secret.json")
 
@@ -63,122 +64,32 @@ def checker(otp):
     if request.method == "POST":
         code = request.form["user-otp"]
         if code == str(otp):
-            flash("Account created", "success")
-            return render_template("landing.html") 
+            # flash("Account created", "success")
+            return render_template("home.html") 
         else:
             flash('Invalid otp',otp=otp)
     
     return ("error")
-
-@app.route("/login", methods=["GET", "POST"])
-def signin():
-    Logform = LoginForm(request.form)
-    Regform = RegistrationForm(request.form)
-    
-    if request.method == "POST":
-        if Logform.validate_on_submit():
-            user = Users.query.filter_by(Email=Logform.Email.data).first()
-            if user and user.check_password(Logform.Password.data):
-                login_user(user)
-                return render_template('home.html')  # Redirect to landing instead of render_template
-            else:
-                flash('Invalid email or password', 'danger')
-
-        elif Regform.validate_on_submit():
-            user = Users.query.filter_by(Email=Regform.Email.data).first()
-            if user:
-                flash('Email already exists', 'danger')
-            else:
-                user = Users(Fullname=Regform.Fullname.data, Email=Regform.Email.data, Password=Regform.Password.data)
-                db.session.add(user)
-                db.session.commit()
-                #Send email with mail credentials at the top
-                otp_str = str(otp)
-                Email = request.form['Email']
-                EmailContent = render_template("email.html", otp=otp_str)
-                msg = Message(subject="Welcome to PetCo", sender='iamhawiana@gmail.com', recipients=[Email])
-                msg.html = EmailContent
-
-                mail.send(msg)   
-
-                flash('Email has been sent your account', 'primary')
-                return render_template ('verify.html', otp=otp) 
-
-        else:
-            flash('Invalid input ', 'danger')
-
-        if "user" in session:
-            return redirect('/home')  # Redirect to landing instead of render_template
-
-    return render_template("forms/SignInUp.html", Logform=Logform, Regform=Regform)
-
-# @app.route("/login", methods=["GET", "POST"])
-# def signin():
-#     Logform = LoginForm(request.form)
-#     if Logform.validate_on_submit():
-#         user = Users.query.filter_by(Email=Logform.Email.data).first()
-#         if user and user.check_password(user.Password, Logform.Password.data):
-#             login_user(user)
-#             return redirect('/home')  # Redirect to landing instead of render_template
-        
-#         else:
-#             flash('Invalid email or password', 'danger')
-#             error = 'Invalid email or password'
-            
-#     else:
-#         if "user" in session:
-#             return redirect('/home')  # Redirect to landing instead of render_template
-    
-#     return render_template("forms/SignInUp.html", Logform=Logform)
- 
-# @app.route('/register', methods=["GET", "POST"])
-# def signup():
-# #  If the user made a POST request, create a new user
-#     Regform = RegistrationForm()
-#     if Regform.validate_on_submit() :
-#         user = Users(Fullname = Regform.Fullname.data, Email = Regform.Email.data,Password= Regform.Password.data)
-        
-#         #Add validated credentials to the database
-#         db.session.add(user)
-#         db.session.commit()  
-
-#         # Send email with mail credentials at the top
-#         otp_str = str(otp)
-#         Email = request.form['Email']
-#         EmailContent = render_template("email.html", otp=otp_str)
-#         msg = Message(subject="Welcome to PetCo", sender='iamhawiana@gmail.com', recipients=[Email])
-#         msg.html = EmailContent
-
-#         mail.send(msg)   
-
-#         flash('Email has been sent your account', 'primary')
-#         return render_template ('verify.html', otp=otp) 
-    
-    #else:
-        # flash("Invalid credentials", "danger")
-    
-    # return render_template("/forms/SignInUp.html", Regform=Regform)
 
 @app.route('/home', methods=["GET","POST"])
 def home():
     return render_template("home.html")
 
 
-@app.route('/log', methods=["GET","POST"])
-def logg():
+@app.route('/login', methods=["GET","POST"])
+def login():
     Logform = LoginForm()
     if Logform.validate_on_submit():
         user = Users.query.filter_by(Email=Logform.Email.data).first()
         login_user(user)
 
         return render_template('home.html')  # Redirect to landing instead of render_template
-    # else:
-    #     flash('Invalid email or password', 'danger')
+   
 
     return render_template("forms/SignIn.html", Logform=Logform)
 
-@app.route('/reg', methods=["GET","POST"])
-def regg():
+@app.route('/register', methods=["GET","POST"])
+def register():
     Regform = RegistrationForm()
     if Regform.validate_on_submit():
          #   user = Users.query.filter_by(Email=Regform.Email.data).first()
@@ -217,8 +128,8 @@ def tryi():
     return render_template("verify.html")
 
 @app.route("/auth", methods=["GET", "POST"])
-def login():
-    return render_template("forms/SignInUp.html")
+def autho():
+    return render_template("forms/SignIn.html")
 
 
 # Google account lists display 
@@ -226,6 +137,7 @@ def login():
 def authenticate():
     authorization_url, state = flow.authorization_url()
     session["state"] = state
+    print(state)
     return redirect (authorization_url)
 
 @app.route("/logout")
