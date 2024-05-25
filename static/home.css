@@ -14,6 +14,7 @@
         margin-left: -10px;
         /* background-color: #000; */
         width: 95%;
+        color: #000;
 
         /* border-radius: 75% 25% 85% 15% / 42% 71% 29% 58%    ; */
     }
@@ -30,10 +31,10 @@
     height: 21vh;
     width: 95%;
     border-radius: 20px;
-    background-color: #f9f57d;
+    font-size: 19px;
     margin-top: -410px;
     margin-bottom: 20px;
-    margin-left: -25px;
+    margin-left: -45px;
     font-family: 'Franklin Gothic Light', 'Arial Narrow', Arial, sans-serif;
     
     p{
@@ -49,6 +50,7 @@
     padding: 30px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     height: 15vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
     color: #000;
     background-color: #FCA311;
     width: 30%;

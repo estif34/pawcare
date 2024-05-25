@@ -1,7 +1,7 @@
 .reg-content{
     width: 100%;
     height: 110vh;
-    
+    margin-top: -40px;
 }
 
 .forms {  /*whole form*/
@@ -46,14 +46,10 @@
     position: relative;
 }
 
-/* .container-2{
-    height: 50vh;
-    background-color: #004085;
-} */
 
 .blob{
     width: 50%;
-    height: 100vh;
+    height: 110vh;
     flex: 0 0 25%;
     /* border-radius: 40%; */
     background-color: hsla(60, 93%, 68%, 0.57); 
@@ -61,15 +57,17 @@
     margin-top: -15px;
 }
 
+.man-with-dog{
+    width: 80%;
+    height: 110vh;
+}
+
 .man-with-dog img{
     width: 100%;
     margin-top: 75px;
-    margin-left: 90px;
+    margin-left: 50px;
 }
 
-/* #ex1{
-    margin-top: -10px;
-} */
 
 .reg-errors{
     font-size: 12px;

@@ -1,13 +1,14 @@
 from flask import Flask, render_template,session,redirect,abort, request,flash,g,url_for
 from google_auth_oauthlib.flow import Flow
 from flask_mail import Mail,Message
-from flask_login import LoginManager, login_user, logout_user
+from flask_login import LoginManager, login_user, logout_user, current_user
 from werkzeug.security import generate_password_hash
-from models import Users,RegistrationForm,db,LoginForm
+from models import Users,RegistrationForm,db,LoginForm,ResetPassForm
 from random import *
 import pathlib,os
 from flask_bcrypt import Bcrypt
 from pathlib import Path
+from bcrypt import hashpw, gensalt
 
 bcrypt = Bcrypt()
 
@@ -15,9 +16,8 @@ app = Flask(__name__)
 
 app.secret_key = "MyGoogleSAuth"
 
-
-def check_password(self,Password):
-    return bcrypt.check_password_hash(self.Password, Password)
+def set_password(self, Password):
+        self.password_hash = hashpw(Password.encode('utf-8'), gensalt()).decode('utf-8')
 
 otp =randint(000000,999999)
 
@@ -26,12 +26,6 @@ login_manager.init_app(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///owners.db"
 
 db.init_app(app)
-
-
-@login_manager.user_loader
-def loader_user(user_id):
-    return Users.query.get(user_id)
-
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -53,6 +47,10 @@ flow = Flow.from_client_secrets_file(
 )
 
 
+@login_manager.user_loader
+def loader_user(user_id):
+    return Users.query.get(user_id)
+
 # ROUTES 
 @app.route("/")
 def landing_page():
@@ -65,7 +63,7 @@ def checker(otp):
         code = request.form["user-otp"]
         if code == str(otp):
             # flash("Account created", "success")
-            return render_template("home.html") 
+            return render_template("forms/reset-password.html") 
         else:
             flash('Invalid otp',otp=otp)
     
@@ -96,8 +94,8 @@ def register():
             user = Users(Fullname=Regform.Fullname.data, Email=Regform.Email.data, Password=Regform.Password.data)
             db.session.add(user)
             db.session.commit()
+
             #Send email with mail credentials at the top
-                
             otp_str = str(otp)
             Email = request.form['Email']
             EmailContent = render_template("email.html", otp=otp_str)
@@ -117,6 +115,25 @@ def register():
 
 @app.route('/reset', methods=["GET","POST"])
 def reset():
+    if current_user.is_authenticated:
+        if request.method == "POST":
+            word = request.form['New_Password']
+            new1 = request.form['Confirm_Password']  
+            print(word)
+            print(new1)
+            # new_password = form.New_Password.data
+            if word == new1:
+                current_user.Password = current_user.set_password(word)
+                db.session.commit()
+                return "HIII"
+            else:
+                flash("Password not match")
+            # return "Password reset successfully"
+        else:
+            flash("Not validating",'danger')
+    else:
+        return redirect(url_for('login'))
+                
     return render_template("forms/reset-password.html")
 
 @app.route('/forgot', methods=["GET","POST"])
@@ -143,7 +160,7 @@ def authenticate():
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect ("/")
+    return redirect (url_for("landing_page"))
 
 
 with app.app_context():

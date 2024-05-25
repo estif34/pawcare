@@ -101,8 +101,8 @@
     width: 95%;
     margin-top: -20px;
     margin-left: 40px;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     
 }
 
@@ -128,6 +128,11 @@
 .box1{
     background-color: #c9f681;
     width: 50%;
+
+    img{
+        width: 50%;
+        margin-top: 7px;
+    }
 }
 
 .box2{
@@ -145,20 +150,20 @@
 }
 
 .man-with-dog{
-    width:70%;
-    margin-top: 12px;
+    width:50%;
+    margin-top: 6px;
     position: relative;
 }
 
 .login-btn{
     width: 40%;
     background-color: #FCA311;
-    margin-left: 80px;
+    margin-left: 140px;
 }
 
 .box3{
     margin: 20px;
-    width: 34%;
+    width: 33%;
     margin-top: 100px;
     height: 50vh;
     border-radius: 30px;
@@ -169,7 +174,7 @@
         justify-content: left;
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         font-size: 15px;
-        padding: 20px;
+        padding: 27px;
     }
 }
 
