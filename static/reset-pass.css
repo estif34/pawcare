@@ -1,23 +1,43 @@
-body {
+.res {
   height: 80vh;
   width: 100%;
-  /* margin-right: 200px; */
-  /* float: right; */
-  margin-top: 50px;
+  margin-top: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#form {
+#res-form {
   position: relative;
   padding: 50px;
   bottom: 0;
   height: 50vh;
+  width: 40%;
   border-radius: 30px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.custom-btn{
-    background-color: #FCA311;
+.forg {
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#for-form {
+  position: relative;
+  padding: 50px;
+  bottom: 0;
+  height: 60vh;
+  width: 40%;
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.res-btn{
+  /* margin-top: 60px; */
+  width: 40%;
+  margin-left: 100px;
+  background-color: #FCA311;
 }

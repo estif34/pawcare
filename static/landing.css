@@ -74,6 +74,26 @@
     }
 }
 
+.petco{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #000;
+    font-size: 30px;
+    position: absolute;
+    z-index: 0;
+}
+
+.menu{
+   position: relative;
+   z-index: 1;
+    li{
+        justify-content: center;
+    }
+}
+
+#logo{
+    width: 5%;
+}
+
 .treat-pet{
     color: black;
     font-size: 15px;
@@ -127,7 +147,7 @@
 
 .box1{
     background-color: #c9f681;
-    width: 50%;
+    width: 44%;
 
     img{
         width: 50%;
@@ -149,7 +169,7 @@
     }
 }
 
-.man-with-dog{
+.man-and-dog{
     width:50%;
     margin-top: 6px;
     position: relative;

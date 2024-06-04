@@ -1,0 +1,65 @@
+.lock-container{
+    height: 100vh;
+    width: 100%;
+    /* z-index: -1; */
+    position: absolute;
+    color: black;
+    background-size: cover;
+    background-position: center;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6),rgba(0, 0, 0, 0.6)), url('images/group-pets.jpg');
+}
+
+.lock-form{
+    display:flex;
+    margin-left: auto;
+    justify-content: center;
+    margin-right: auto;
+    margin-top: 70px;
+    height: 50vh;
+    z-index: 2;
+    background-color:#fafcef;
+    width: 30%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); 
+    border: 2px black;
+    border-radius: 10px;
+
+    form{
+        width:78%;
+        margin-top: 40px;
+        padding: 10px;
+    }
+
+    input{
+        /* display: flex; */
+        justify-content: center;
+        margin: 10px;
+        width: 80%;
+    }
+}
+
+.flashes .alert {
+    padding: 4px 0px; /* Reduce padding to decrease height */
+    width: 70%;
+    text-align: center;
+    font-size: 10px; /* Optionally reduce font size */
+    border-radius: 4px; /* Adjust border radius if needed */
+    height: 4vh;
+} 
+
+#lock-btn{
+    background-color: #fca311;
+    color: #ffffff;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+
+#user{
+    width: 100px;
+    margin-top: -20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    
+}

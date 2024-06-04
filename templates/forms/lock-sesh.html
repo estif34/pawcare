@@ -1,0 +1,48 @@
+{% extends "base/index.html" %}
+{% block title %}{% endblock %}
+{%block content %}
+
+
+<div class="lock-container">
+
+    <div class='lock-form'>
+        <form action="/lock-session" method="POST">
+
+            <img src="{{ url_for('static', filename='images/profile-user.png') }}" id="user" />
+            <br />
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <h3><span style="font-size: 14px; font-weight: 400;" {{ Fullname }}</h3>
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="password" id="loginPassword" name="Password" class="form-control" required />
+                        <label class="form-label" for="loginPassword">Password</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="lock-btn" name='Login' data-mdb-ripple-init>Return
+                        to session</button>
+    </div>
+    </form>
+
+
+    <script>
+       
+
+        function preventBack() {
+            window.history.forward();
+        }
+
+        window.onload = function () {
+            preventBack();
+        };
+
+    </script>
+</div>
+
+{% endblock %}

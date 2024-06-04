@@ -1,49 +1,25 @@
 .content{
     width: 100%;
-    height: 100vh;
+    height: 80vh;
     
 }
 
-.forms {
+.log-form {
     width: 35%;
     height: 70vh;
     margin-right: 90px;
-    float: right;
-    margin-top: -550px;
+    float: right;   
+    margin-top: -580px;
     font-size: 15px;
 }
 
-.flashes{
-    text-align: center;
-    margin-top: -10px;
-   font-size: 13px;
-    .alert-primary {
-        color: #004085;
-        background-color: #cce5ff;
-        border-color: #b8daff;
-        
-    }
-
-    .alert-success {
-        color: #155724;
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-    }
-
-    .alert-danger {
-        color: #721c24;
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-        margin-top: 10px;
-    }
-}
-.container{
+.log-form-content{
     height: 75vh;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 30px;
+    width: 100%;
+    float: right;
     border-radius: 10px;
-    z-index: 0;
-    position: relative;
 }
 
 .container-2{
@@ -55,16 +31,25 @@
     height: 100vh;
     flex: 0 0 25%;
     /* border-radius: 40%; */
-    background-color: hsla(60, 93%, 68%, 0.57); 
+    /* background-color: hsla(60, 93%, 68%, 0.57);  */
     margin-left: 1px;
     margin-top: -15px;
 }
 
-/* #tab-pO{
-    color: rgb(42, 40, 40);
-    border-radius: 15px;
-    
-} */
+
+.log-petco{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #000;
+    font-size: 30px;
+    margin-top: 15px;
+    margin-left: 14px;
+    position: absolute;
+    z-index: 0;
+
+    #logo{
+        width: 5%;
+    }
+}
 
 .man-with-dog img{
     width: 100%;
@@ -139,20 +124,4 @@
     background-color: rgb(255, 255, 255);
     position: relative;
     size: 80%;
-}
-
-.reg-form-content{
-    margin-top: -500px;
-    width: 88%;
-    margin-left: 1px;
-    height: 30vh;
-    background-color: #ffffff;
-    position: absolute;
-    z-index: 1;
-}
-
-.reg-btn{
-    /* margin-top: -50px; */
-    background-color: #155724;
-
 }

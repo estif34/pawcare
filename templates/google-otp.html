@@ -1,0 +1,129 @@
+{% extends "base/index.html" %}
+{% block title %}OTP Verification {% endblock %}
+{% block content %}
+    
+<nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" id="nav" data-mdb-theme="light">
+    <!-- Container wrapper -->
+
+    <div class="container-fluid">
+        <!-- Toggle button -->
+        <button data-mdb-collapse-init class="navbar-toggler" type="button" data-mdb-target="#navbarCenteredExample"
+            aria-controls="navbarCenteredExample" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <li>
+            <span
+                style="float:left;font-weight: 700; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 26px;">
+                <a class="nav-link" href="#">PetCo </a> </span>
+        </li>
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
+            <!-- Left links -->
+            <ul class="navbar-nav mb-1 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">QnA's </a>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">My Pet </a>
+                </li>
+
+                <!-- <li class="nav-item">
+          <a style="color:#FCA311;" class="nav-link" href=" /register">Login</a>
+        </li> -->
+
+                <!-- Navbar dropdown -->
+                <!-- <li class="nav-item dropdown">
+            <a
+              data-mdb-dropdown-init
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              aria-expanded="false"
+            >
+              Dropdown
+            </a> -->
+                <!-- Dropdown menu -->
+                <!-- <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li>
+                <a class="dropdown-item" href="#">Action</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">Another action</a>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </li>
+            </ul>
+          </li> -->
+                <!--              
+            <span style="font-family:Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 18px;">
+                <a class="nav-link" href="#">Create Account </a> </span>        -->
+
+                <li class="nav-item">
+                    <!-- <a class="nav-link disabled"
+              >Disabled</a
+            > -->
+                </li>
+            </ul>
+            <!-- Left links -->
+        </div>
+        <!-- Collapsible wrapper -->
+    </div>
+    
+    <div class="menu">
+        <div class="nav-item">
+            <a style="color:#FCA311; font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin-left:30px;"
+                class="nav-link" href=" /register">Lock</a>
+        </div>
+        <br />
+        <div class="nav-item">
+            <a style="color:#FCA311; font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"
+                class="nav-link" href=" /register">Log out</a>
+        </div>
+
+
+    </div>
+   
+    <!-- Container wrapper -->
+</nav>
+
+    <div class="ver-container">
+        <h2>Verify OTP</h2>
+        <form method="POST" action="{{ url_for('goog_checker', otp=otp) }}">
+            {{ csrf }}
+            <div class="form-group">
+                <label for="user-otp">Enter OTP</label>
+                <input type="text" class="form-control" id="user-otp" name="user-otp" required>
+            </div>
+            <button type="submit" id = "vbtn" class="btn">Verify</button>
+
+        </form>
+
+        <!-- Display flash messages -->
+        <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %} -->
+    </div>
+
+    
+    {% endblock %}

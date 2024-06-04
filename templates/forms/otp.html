@@ -1,0 +1,97 @@
+{% extends "base/index.html" %}
+{% block title %} Reset Password {% endblock %}
+{% block content %}
+
+
+<div class="land-navigation">
+    <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
+        <!-- Container wrapper -->
+
+        <div class="container-fluid">
+            <!-- Toggle button -->
+            <button data-mdb-collapse-init class="navbar-toggler" type="button" data-mdb-target="#navbarCenteredExample"
+                aria-controls="navbarCenteredExample" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            
+            <div class="petco">
+                <span>PetCo
+                    <img src="{{ url_for('static', filename='images/pet-care.png') }}" id="logo" />
+                </span>
+            </div>
+
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
+                <!-- Left links -->
+                <ul class="navbar-nav mb-1 mb-lg-0">
+
+                    <div class="menu">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">About </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a style="color:#FCA311;" class="nav-link" href="/login">Login</a>
+                        </li>
+                    </div>
+
+                    <li class="nav-item">
+                        <!-- <a class="nav-link disabled"
+                  >Disabled</a
+                > -->
+                    </li>
+                </ul>
+                <!-- Left links -->
+            </div>
+            <!-- Collapsible wrapper -->
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+
+</div>
+
+<section class="otp-em">
+
+    <div class="lady-cat">
+        <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+
+    <dotlottie-player src="https://lottie.host/ad7bb327-2bc7-429f-99f5-5560e98b3fb1/wEl2xmJkrr.json" background="transparent" speed="1" style="width: 350px; height: 350px; margin-top: -20px;" loop autoplay></dotlottie-player>
+    </div>
+    
+    <form action="{{ url_for('cdonf') }}" method="POST" id="otp-em-form">
+        
+        <h4 style="color: #fca311;margin-top: -30px; margin-bottom: 10px; font-weight: 600; text-align: center; padding: 10px;"> 2. Verify OTP </h4>
+
+        
+        {% if request.method == 'POST' %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% endif %}
+
+        {{ csrf }}
+       
+        
+        <div data-mdb-input-init class="form-outline mb-4 mt-4">
+            <input type="integer" name="user-otp" class="form-control" required />
+            <label class="form-label" for="loginName">OTP</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 mt-3 rounded-pill shadow-sm otp-btn"
+        href=""> Confirm code </button>
+    </form>
+
+
+</section>
+
+{% endblock %}

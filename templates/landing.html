@@ -1,4 +1,4 @@
-{% extends "./index.html" %}
+{% extends "base/index.html" %}
 {% block title %} {% endblock %}
 {% block content %}
 
@@ -14,60 +14,30 @@
           <i class="fas fa-bars"></i>
         </button>
 
-        <li>
-          <span
-            style="float:left;font-weight: 700; font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 26px;">
-            <a class="nav-link" href="#">PetCo </a> </span>
-        </li>
-
-
+        <div class="petco">
+          <span >PetCo
+            <img src="{{ url_for('static', filename='images/pet-care.png') }}" id="logo" />
+          </span>
+        </div>
 
         <!-- Collapsible wrapper -->
         <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
           <!-- Left links -->
           <ul class="navbar-nav mb-1 mb-lg-0">
 
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">About </a>
-            </li>
-
-            <li class="nav-item">
-              <a style="color:#FCA311;" class="nav-link" href="/login">Login</a>
-            </li>
-
-            <!-- Navbar dropdown -->
-            <!-- <li class="nav-item dropdown">
-                <a
-                  data-mdb-dropdown-init
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  aria-expanded="false"
-                >
-                  Dropdown
-                </a> -->
-            <!-- Dropdown menu -->
-            <!-- <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li>
-                    <a class="dropdown-item" href="#">Action</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">Another action</a>
-                  </li>
-                  <li><hr class="dropdown-divider" /></li>
-                  <li>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </li>
-                </ul>
-              </li> -->
-            <!--              
-                <span style="font-family:Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 18px;">
-                    <a class="nav-link" href="#">Create Account </a> </span>        -->
-
+            <div class="menu">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">About </a>
+              </li>
+  
+              <li class="nav-item">
+                <a style="color:#FCA311;" class="nav-link" href="/login">Login</a>
+              </li>
+            </div>
+          
             <li class="nav-item">
               <!-- <a class="nav-link disabled"
                   >Disabled</a
@@ -75,6 +45,10 @@
             </li>
           </ul>
           <!-- Left links -->
+          <!-- <div class="nav-item">
+            <a style="color:#FCA311; font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"
+                class="nav-link" href="/logout">Log out</a>
+        </div> -->
         </div>
         <!-- Collapsible wrapper -->
       </div>
@@ -85,7 +59,7 @@
 
   <section class="land-container">
 
-
+   
     <div class="better-health">
       <h3> BETTER <span style="color:#FCA311;"> HEALTHCARE </span>FOR YOUR PETS </h3>
 
@@ -105,7 +79,9 @@
     </div>
 
     <div>
+     
       <div class="doggie">
+  
         <img src="{{ url_for('static', filename='images/bernard.png') }}" id="dog" />
       </div>
     </div>
@@ -114,20 +90,23 @@
 
   <section class="page2">
 
-    <div class="choose-petco"> <h2> Flexible, Trustworthy & Reliable Care For Your Pet </h2> </div>
+    <div class="choose-petco">
+      <h2> Flexible, Trustworthy & Reliable Care For Your Pet </h2>
+    </div>
 
     <div class="base-orange">
       <div class="box1">
-        <img src="{{ url_for('static', filename='images/man-holding-dog.png') }}" class="man-with-dog" id="dogg" />
+        <img src="{{ url_for('static', filename='images/man-holding-dog.png') }}" class="man-and-dog" id="dogg" />
       </div>
 
       <div class="box2">
-        <p> We do our due diligence in ensuring you and your pet get the best care and service at affordable prices. </p>
+        <p> We do our due diligence in ensuring you and your pet get the best care and service at affordable prices.
+        </p>
 
-        <button type="submit"
-        class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm login-btn"> Services </button>
+        <button type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm login-btn">
+          Services </button>
       </div>
-  
+
       <!-- <div class="box3">
         <img src="{{ url_for('static', filename='images/pet-cross.png') }}" style="width: 40%;margin-top: 30px;"/>
         <p> We love pets too!  To our due diligence in ensuring you the best quality services </p>
@@ -135,7 +114,7 @@
 
     </div>
 
-    
+
   </section>
 
 </div>

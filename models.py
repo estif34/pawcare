@@ -25,6 +25,31 @@ class Users(UserMixin, db.Model):
 
     def set_password(self, Password):
         return bcrypt.generate_password_hash(Password).decode('utf-8')
+    
+
+class Pets(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    PetName = db.Column(db.String(250), nullable=False)
+    Species = db.Column(db.String(250), unique=True, nullable=False)
+    OwnerId = db.Column(db.Integer, nullable=False)
+
+
+class Vets(UserMixin, db.Model):
+    VetId = db.Column(db.Integer, primary_key=True)
+    VetName = db.Column(db.String(250), nullable=False)
+    Email = db.Column(db.String(250), unique=True, nullable=False)
+    Password = db.Column(db.String(250), nullable=False)
+
+    def __init__(self, Fullname, Email, Password):
+        self.Fullname = Fullname
+        self.Email = Email
+        self.Password = self.set_password(Password)
+
+    def check_password(self, Password):
+        return bcrypt.check_password_hash(self.Password, Password)
+
+    def set_password(self, Password):
+        return bcrypt.generate_password_hash(Password).decode('utf-8')
 
 class RegistrationForm(FlaskForm):
     Fullname = StringField('Fullname', validators=[DataRequired()])
@@ -61,17 +86,7 @@ class LoginForm(FlaskForm):
         if not user or not user.check_password(field.data):
             raise ValidationError('Invalid password')
 
-class ResetPassForm(FlaskForm):
-    New_Password =  PasswordField('New_Password')
-    Confirm_Password = PasswordField('Confirm_Password')
-    Submit = SubmitField('Reset')
-
-    def validate_Password(self, field):
-        if field.data != self.Confirm_Password.data: 
-            raise ValidationError('Passwords must match')
-        else:
-            if not re.search(r"[A-Z]", field.data):
-                raise ValidationError('Password must contain at least one uppercase letter.')
-            else:
-                if not re.search(r"[0-9]", field.data):
-                    raise ValidationError('Password must contain at least one number.')
+# class ResetPassForm(FlaskForm):
+#     New_Password =  PasswordField('New_Password')
+#     Confirm_Password = PasswordField('Confirm_Password')
+#     Submit = SubmitField('Reset')
