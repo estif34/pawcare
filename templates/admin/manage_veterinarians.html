@@ -1,0 +1,24 @@
+{% extends "base/index.html" %}
+{% block content %}
+<h1>Manage Veterinarians</h1>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+    </tr>
+    {% for vet in veterinarians %}
+    <tr>
+        <td>{{ vet.Fullname }}</td>
+        <td>{{ vet.Email }}</td>
+        <td>
+            <form method="POST">
+                <input type="hidden" name="veterinarian_id" value="{{ vet.id }}">
+                <button type="submit" name="action" value="approve">Approve</button>
+                <button type="submit" name="action" value="reject">Reject</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
