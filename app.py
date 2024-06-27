@@ -77,16 +77,18 @@ def login():
         user = Users.query.filter_by(Email=Logform.Email.data).first()
         if user and user.check_password(Logform.Password.data):
             # login_user(user)
-            otp_str = str(otp)
-            Email = Logform.Email.data
-            EmailContent = render_template("emails/log-otp-email.html", otp=otp_str)
-            msg = Message(subject="Welcome back!", sender='stephengm31@gmail.com', recipients=[Email])
-            msg.html = EmailContent
+            # otp_str = str(otp)
+            # Email = Logform.Email.data
+            # EmailContent = render_template("emails/log-otp-email.html", otp=otp_str)
+            # msg = Message(subject="Welcome back!", sender='stephengm31@gmail.com', recipients=[Email])
+            # msg.html = EmailContent
 
-            mail.send(msg)   
+            # mail.send(msg)   
             login_user(user)
-            flash('Email has been sent your account', 'primary')
-            return render_template ('login-verify.html', otp=otp) 
+            # flash('Email has been sent your account', 'primary')
+            # return render_template ('login-verify.html', otp=otp)
+            return render_template("home.html") #reset-password.html
+ 
         else:
             flash('Invalid email or password', 'danger')
         #return render_template('home.html')  # Redirect to landing instead of render_template
