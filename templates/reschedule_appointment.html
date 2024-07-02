@@ -3,40 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='reg-vet.css') }}"> -->
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <title>Appointments</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
 
-    <style>
-        body {
-            background-color: #f0f0f0;
-            padding-top: 40px;
-            padding-bottom: 40px;
-        }
-        .form-register {
-            max-width: 400px;
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-
     <script type="module" type="text/javascript" src="../static/mdb/js/mdb.umd.min.js"></script>
-
 
 </head>
 <body>
-    
     <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
         <div class="home-nav">
             <button data-mdb-collapse-init class="navbar-toggler" type="button"
@@ -65,6 +44,9 @@
                     {% if current_user.role == 'user' %}
                     <li class="nav-item">
                         <a class="nav-link" href="#">My Pet </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('my_appointments') }}">My Appointments </a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
@@ -106,46 +88,29 @@
                 </div>
             </div>
         </div>
-    </div><br><br>
-
-    <div class="container">
-        <h1 class="text-center">Register Veterinarian</h1><br>
-        <form class="form-register" method="POST">
-            <div class="form-group">
-                <label for="Fullname">Full Name</label>
-                <input type="text" class="form-control" id="Fullname" name="Fullname" required>
-            </div>
-            <div class="form-group">
-                <label for="Email">Email</label>
-                <input type="email" class="form-control" id="Email" name="Email" required>
-            </div>
-            <div class="form-group">
-                <label for="Password">Password</label>
-                <input type="password" class="form-control" id="Password" name="Password" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Register</button>
-        </form>
     </div>
 
-    <!-- Bootstrap JS and dependencies (jQuery, Popper.js) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
-<!-- <h1>Register Veterinarian</h1>
-<form method="POST">
-    <label for="Fullname">Full Name</label>
-    <input type="text" name="Fullname" required>
-    
-    <label for="Email">Email</label>
-    <input type="email" name="Email" required>
-    
-    <label for="Password">Password</label>
-    <input type="password" name="Password" required>
-    
-    <button type="submit">Register</button>
-</form> -->
-
+    <div class="container mt-5">
+        <h1>Reschedule Appointment</h1>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.date.label }} {{ form.date(class_="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.time.label(class="form-label") }}
+                {{ form.time(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class_="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+    <script>
+        // JavaScript to set the minimum date to today's date
+        const dateInput = document.querySelector('input[type="date"]');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+    </script>
 </body>
 </html>

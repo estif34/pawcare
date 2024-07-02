@@ -94,43 +94,16 @@
     </div>
 
     <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-picture">
-                {% if current_user.profile_picture %}
-                    <img src="{{ url_for('static', filename=current_user.profile_picture.split('static/')[1]) }}" alt="Profile Picture">
-                {% else %}
-                    <img src="{{ url_for('static', filename='uploads/profile.png') }}" alt="Default Profile Picture">
-                {% endif %}
-            </div>
-            <h1>{{ current_user.Fullname }}</h1>
-            <h2>{{ current_user.Email }}</h2>
-        </div>
-        <div class="profile-form">
-            <form method="POST" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.Fullname.label }}
-                    {{ form.Fullname(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Email.label }}
-                    {{ form.Email(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.profile_picture.label }}
-                    {{ form.profile_picture() }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Submit(class_='btn btn-primary') }}
-                </div>
-            </form>
-        </div>
-        <!-- {% if current_user.role == 'user' %}
-            <h2 class="mt-4">My Pets</h2>
+        {% if current_user.role == 'user' %}
+            <h1 class="mt-4">My Pets</h1>
             <div class="pets-container">
                 {% for pet in current_user.pets %}
                     <div class="pet">
                         <h3>{{ pet.name }}</h3>
+                        {% if pet.profile_photo %}
+                            <img src="{{ url_for('static', filename='pet_pics/' ~ pet.profile_photo) }}" alt="{{ pet.PetName }}" class="pet-profile-photo">
+                        {% endif %}
+                            <a href="{{ url_for('update_pet', pet_id=pet.id) }}" class="btn btn-secondary">Edit</a>
                         <p>Species: {{ pet.species }}</p>
                         <p>Breed: {{ pet.breed }}</p>
                         <p>Age: {{ pet.age }}</p>
@@ -142,7 +115,7 @@
 
         <br>
         <br>
-        <h3>Appointments</h3>
+        <!-- <h3>Appointments</h3>
         <ul>
             {% for appointment in current_user.owner_appointments if appointment.status == "scheduled" %}
             <li>
@@ -156,8 +129,8 @@
             </li><br>
             {% endfor %}
         </ul>
-        <a href="{{ url_for('book_appointment') }}" class="btn btn-success mt-3">Schedule Appointment</a>
-        {% endif %} -->
+        <a href="{{ url_for('book_appointment') }}" class="btn btn-success mt-3">Schedule Appointment</a> -->
+        {% endif %}
     </div>
 
 
@@ -177,3 +150,83 @@
     </script>
 </body>
 </html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Pets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
+
+</head>
+<body> -->
+    <!-- Navbar -->
+    <!-- <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
+        <div class="home-nav">
+            <button data-mdb-collapse-init class="navbar-toggler" type="button"
+                data-mdb-target="#navbarCenteredExample" aria-controls="navbarCenteredExample" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="home-petco">
+                <span>PetCo
+                    <img src="{{ url_for('static', filename='images/pet-care.png') }}" id="logo" />
+                </span>
+            </div>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
+                <ul class="navbar-nav mb-1 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('my_pets') }}">My Pets</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('my_appointments') }}">My Appointments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">Profile </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="menu">
+                <div class="nav-item">
+                    <a style="color:#FCA311; font-size:18px;float:right;margin-right:8px;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin-left:30px;"
+                        class="nav-link" href="{{ url_for('checkPass') }}">Lock</a>
+                </div>
+                <div class="nav-item">
+                    <a style="z-index:2; color:#FCA311; padding-left:15px;font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"
+                        class="nav-link" data-mdb-ripple-init data-mdb-modal-init
+                        data-mdb-target="#staticBackdrop">Log out</a>
+                </div>
+            </div>
+        </div>
+    </nav> -->
+    <!-- End of Navbar -->
+
+    <!-- <div class="container">
+        <h2 class="mt-4">My Pets</h2>
+        <div class="pets-container">
+            {% for pet in pets %}
+                <div class="pet">
+                    <h3>{{ pet.name }}</h3>
+                    <p>Species: {{ pet.species }}</p>
+                    <p>Breed: {{ pet.breed }}</p>
+                    <p>Age: {{ pet.age }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="{{ url_for('register_pet') }}" class="btn btn-success mt-3">Register a New Pet</a>
+    </div>
+</body>
+</html> -->

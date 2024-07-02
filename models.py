@@ -2,8 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
-from wtforms import StringField, PasswordField, SubmitField, Form, validators, FileField, HiddenField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, Form, validators, FileField, HiddenField, IntegerField, SelectField, DateTimeField, DateField, TimeField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from flask_wtf.file import FileAllowed
 import re
 
 db = SQLAlchemy()
@@ -38,6 +39,7 @@ class Pet(UserMixin, db.Model):
     species = db.Column(db.String(250), nullable=False)
     breed = db.Column(db.String(250), nullable=True)
     age=db.Column(db.Integer, nullable=True)
+    profile_photo = db.Column(db.String(250), nullable=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
@@ -57,6 +59,20 @@ class Vets(UserMixin, db.Model):
 
     def set_password(self, Password):
         return bcrypt.generate_password_hash(Password).decode('utf-8')
+    
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), nullable=False)
+    vet_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    description = db.Column(db.String(500), nullable=True)
+    status = db.Column(db.String(50), nullable=False, default='scheduled')
+
+    pet = db.relationship('Pet', backref='appointments', lazy=True)
+    vet = db.relationship('Users', foreign_keys=[vet_id], backref='vet_appointments', lazy=True)
+    owner = db.relationship('Users', foreign_keys=[owner_id], backref='owner_appointments', lazy=True)
+
 
 class RegistrationForm(FlaskForm):
     Fullname = StringField('Fullname', validators=[DataRequired()])
@@ -111,4 +127,21 @@ class PetForm(FlaskForm):
     species = StringField('Species', validators=[DataRequired()])
     breed = StringField('Breed')
     age = IntegerField('Age')
-    submit = SubmitField('Register Pet')
+    profile_photo = FileField('Profile Photo', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Submit Pet')
+
+class AppointmentForm(FlaskForm):
+    Pet = SelectField('Pet', validators=[DataRequired()])
+    vet = SelectField('Veterinarian', validators=[DataRequired()])
+    date = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
+    time = TimeField('Time', format='%H:%M', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    submit = SubmitField('Book Appointment')
+
+class RescheduleAppointmentForm(FlaskForm):
+    date = DateField('New Date:', format="%Y-%m-%d", validators=[DataRequired()])
+    time = TimeField('New Time', format='%H:%M', validators=[DataRequired()])
+    submit = SubmitField('Reschedule Appointment')
+
+class CancelAppointmentForm(FlaskForm):
+    submit = SubmitField('Cancel Appointment')

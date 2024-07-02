@@ -5,34 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Pet</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-4">Register a New Pet</h1>
-        <form method="POST" action="">
+        <h1 class="mt-4">Update Pet Profile</h1>
+        <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
-            
             <div class="form-group">
-                {{ form.name.label(class="form-control-label") }}
+                {{ form.name.label(class="form-label") }}
                 {{ form.name(class="form-control") }}
             </div>
             <div class="form-group">
-                {{ form.species.label(class="form-control-label") }}
+                {{ form.species.label(class="form-label") }}
                 {{ form.species(class="form-control") }}
             </div>
             <div class="form-group">
-                {{ form.breed.label(class="form-control-label") }}
+                {{ form.breed.label(class="form-label") }}
                 {{ form.breed(class="form-control") }}
-            </div>
-            <div class="form-group">
-                {{ form.age.label(class="form-control-label") }}
-                {{ form.age(class="form-control") }}
             </div>
             <div class="form-group">
                 {{ form.profile_photo.label(class="form-label") }}
                 {{ form.profile_photo(class="form-control-file") }}
-            </div><br>
-            <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
         </form>
     </div>
 </body>

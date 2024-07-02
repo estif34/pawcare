@@ -1,0 +1,86 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Appointments List */
+.appointments-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.appointments-list li {
+    background-color: #e9ecef;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointments-list li:last-child {
+    margin-bottom: 0;
+}
+
+/* Appointment Details */
+.appointment-details p {
+    margin: 5px 0;
+    color: #333;
+}
+
+.appointment-details p strong {
+    color: #000;
+}
+
+/* Buttons */
+.appointment-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-success {
+    background-color: #28a745;
+}
+
+/* Header */
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Schedule Button */
+.schedule-button {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+}

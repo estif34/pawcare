@@ -3,9 +3,9 @@ from google_auth_oauthlib.flow import Flow
 from flask_mail import Mail,Message
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_session import Session
-from models import Users,RegistrationForm,db,LoginForm, Vets, ProfileForm, Pet, PetForm
+from models import Users,RegistrationForm,db,LoginForm, Vets, Appointment, ProfileForm, Pet, PetForm, AppointmentForm, CancelAppointmentForm, RescheduleAppointmentForm
 from random import *
-import pathlib,os
+import pathlib,os, secrets
 from flask_bcrypt import Bcrypt  
 from dotenv import load_dotenv   
 from googleapiclient.discovery import build
@@ -14,6 +14,8 @@ from bcrypt import hashpw, gensalt
 from functools import wraps
 from flask_bcrypt import generate_password_hash
 from werkzeug.utils import secure_filename
+from datetime import datetime, date, time
+from PIL import Image
 
 
 load_dotenv()
@@ -428,7 +430,7 @@ def register_veterinarian():
         email = request.form.get('Email')
         password = request.form.get('Password')
 
-        veterinarian = Users(Fullname=fullname, Email=email, Password=password, role='veterinarian')
+        veterinarian = Users(Fullname=fullname, Email=email, Password=password, role='veterinarian')#, status='approved')
         db.session.add(veterinarian)
         db.session.commit()
         flash('Veterinarian registered successfully!', 'success')
@@ -464,18 +466,160 @@ def profile():
 def register_pet():
     form = PetForm()
     if form.validate_on_submit():
+        if form.profile_photo.data:
+            photo_file = save_picture(form.profile_photo.data)
+        else:
+            photo_file = None
         pet = Pet(
             name=form.name.data,
             species=form.species.data,
             breed=form.breed.data,
             age=form.age.data,
+            profile_photo=photo_file,
             owner_id=current_user.id
         )
         db.session.add(pet)
         db.session.commit()
         flash('Pet registered successfully!', 'success')
-        return redirect(url_for('profile'))
+        return redirect(url_for('my_pets'))
     return render_template('register_pet.html', form=form)
+
+@app.route('/update_pet/<int:pet_id>', methods=['GET', 'POST'])
+@login_required
+def update_pet(pet_id):
+    pet = Pet.query.get_or_404(pet_id)
+    form=PetForm()
+    if form.validate_on_submit():
+        pet.name = form.name.data
+        pet.species = form.species.data
+        pet.breed = form.breed.data
+        if form.profile_photo.data:
+            photo_file = save_picture(form.profile_photo.data)
+            pet.profile_photo = photo_file
+        db.session.commit()
+        flash('Your pet\'s profile has been updated!', 'success')
+        return redirect(url_for('my_pets'))
+    elif request.method == 'GET':
+        form.name.data = pet.name
+        form.species.data = pet.species
+    return render_template('update_pet.html', form=form, pet=pet)
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/pet_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+
+def send_mail_notification(recipient, subject, template, context):
+    msg = Message(
+        subject,
+        sender='stephengm31@gmail.com',
+        recipients=[recipient]
+    )
+    msg.html = render_template(template, **context)
+    mail.send(msg)
+
+@app.route('/book_appointment', methods=['GET', 'POST'])
+@login_required
+def book_appointment():
+    form = AppointmentForm()
+    form.Pet.choices = [(Pet.id, Pet.name) for Pet in Pet.query.filter_by(owner_id=current_user.id).all()]
+    form.vet.choices = [(Users.id, Users.Fullname) for Users in Users.query.filter_by(role='veterinarian').all()]#, status='approved').all()]
+
+    if form.validate_on_submit():
+        appointment_datetime = datetime.combine(form.date.data, form.time.data)
+        appointment = Appointment(
+            pet_id = form.Pet.data,
+            vet_id = form.vet.data,
+            owner_id=current_user.id,
+            date=appointment_datetime,
+            description=form.description.data
+        )
+        db.session.add(appointment)
+        db.session.commit()
+
+        send_mail_notification(
+            recipient=current_user.Email,
+            subject='Appointment Booked',
+            template='emails/appointment_booked.html',
+            context={'appointment': appointment}
+        )
+
+        flash('Appointment booked successfully!', 'success')
+        return redirect(url_for('my_appointments'))
+
+    return render_template('book_appointment.html', form=form)
+
+@app.route('/reschedule_appointment/<int:appointment_id>', methods=['GET', 'POST'])
+@login_required
+def reschedule_appointment(appointment_id):
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.owner_id != current_user.id: #and appointment.vet_id != current_user.id
+        flash('You are not authorized to reschedule this appointment.', 'danger')
+        return redirect(url_for('profile'))
+    
+    form = RescheduleAppointmentForm()
+    if form.validate_on_submit():
+        appointment_datetime = datetime.combine(form.date.data, form.time.data)
+        appointment.date = appointment_datetime
+        db.session.commit()
+
+        send_mail_notification(
+            recipient=current_user.Email,
+            subject='Appointment Rescheduled',
+            template='emails/appointment_rescheduled.html',
+            context={'appointment': appointment}
+        )
+
+        flash('Appointment rescheduled successfully!', 'success')
+        return redirect(url_for('my_appointments'))
+    
+    return render_template('reschedule_appointment.html', form=form, appointment=appointment)
+
+@app.route('/cancel_appointment/<int:appointment_id>', methods=['GET', 'POST'])
+@login_required
+def cancel_appointment(appointment_id):
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.owner_id != current_user.id: #and appointment.vet_id != current_user.id
+        flash('You are not authorized to cancel this appointment.', 'danger')
+        return redirect(url_for('profile'))
+    
+    form = CancelAppointmentForm()
+    if form.validate_on_submit():
+        appointment.status = 'cancelled'
+        db.session.commit()
+
+        send_mail_notification(
+            recipient=current_user.Email,
+            subject='Appointment Cancelled',
+            template='emails/appointment_cancelled.html',
+            context={'appointment': appointment}
+        )
+
+        flash('Appointment cancelled successfully!', 'success')
+        return redirect(url_for('my_appointments'))
+    
+    return render_template('cancel_appointment.html', form=form, appointment=appointment)
+
+@app.route('/my_pets')
+@login_required
+def my_pets():
+    pets = current_user.pets
+    return render_template('my_pets.html', pets=pets)
+
+@app.route('/my_appointments')
+@login_required
+def my_appointments():
+    appointments = current_user.owner_appointments
+    return render_template('my_appointments.html', appointments=appointments)
 
 
 with app.app_context():
