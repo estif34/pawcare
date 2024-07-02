@@ -1,7 +1,7 @@
-# PetCo: A Pet Healthcare Companion Web Application for Kenyan Pet Owners
+# PetCo: A Pet Healthcare Companion Web Application for Pet Owners
 
 ## Description
-PetCo is a web application designed to assist Kenyan pet owners in managing their pets' healthcare needs. The platform provides functionalities such as tracking vaccination schedules, setting reminders for veterinary appointments, and maintaining a comprehensive health record for pets. The application aims to simplify pet healthcare management, ensuring pets receive timely and proper care.
+PetCo is a web application designed to assist Kenyan pet owners in managing their pets' healthcare needs. The platform provides functionalities such as scheduling appointments, notifications for veterinary appointments, and maintaining a comprehensive health record for pets. The application aims to simplify pet healthcare management, ensuring pets receive timely and proper care.
 
 ## Installation
 
@@ -14,7 +14,7 @@ PetCo is a web application designed to assist Kenyan pet owners in managing thei
 ### Steps
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/petco.git
+    git clone https://github.com/estif34/petco.git
     cd petco
     ```
 
@@ -50,28 +50,38 @@ PetCo is a web application designed to assist Kenyan pet owners in managing thei
 ```markdown
 petco/
 │
-├── app/
-│   ├── __init__.py
-│   ├── routes.py
-│   ├── models.py
-│   └── static/
-│       ├── css/
-│       │   └── styles.css
-│       └── images/
-│           └── logo.png
-│   └── templates/
-│       ├── index.html
-│       ├── layout.html
-│       └── pet_details.html
+├── __pycache__/
 │
-├── tests/
-│   ├── test_app.py
-│   └── test_models.py
+├── instance/
 │
-├── venv/
+├── static/
 │
+├── templates/
+│   ├── admin/
+│   ├── base/
+│   ├── emails/
+│   └── forms/
+│   ├── book_appointment.html
+│   ├── cancel_appointment.html
+│   ├── google-otp.html
+│   ├── home.html
+│   ├── landing.html
+│   ├── login-verify.html
+│   ├── my_appointments.html
+│   ├── my_pets.html
+│   ├── profile.html
+│   ├── register_pet.html
+│   ├── reschedule_appointment.html
+│   ├── update_pet.html
+│   └── verify.html
+│
+├── .env
 ├── .gitignore
+├── app.py
+├── client_credentials.py
+├── client_secret.json
+├── composer.json
+├── mdb_index.html.txt
+├── models.py
 ├── README.md
-├── requirements.txt
-└── run.py
-
+└── requirements.txt
