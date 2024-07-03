@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
+    <title>Vet Appointments</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
@@ -11,9 +11,29 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
     <style>
-
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .fc-daygrid-day {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .fc-daygrid-day:hover {
+            background-color: #f0f0f0;
+        }
+        .appointments-list {
+            margin-top: 30px;
+        }
+        .appointment-item {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
     </style>
     <script type="module" type="text/javascript" src="../static/mdb/js/mdb.umd.min.js"></script>
 
@@ -52,6 +72,11 @@
                         <a class="nav-link" href="{{ url_for('my_appointments') }}">My Appointments </a>
                     </li>
                     {% endif %}
+                    {% if current_user.role == 'veterinarian' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('vet_appointments') }}">Appointments</a>
+                    </li>
+                    {% endif %}
                     {% if current_user.role == 'admin' %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('manage_vets') }}">Veterinarians</a>
@@ -61,14 +86,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('register_admin') }}">Register Admin </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_reports') }}">Reports</a>
-                    </li>
-                    {% endif %}
-                    {% if current_user.role == 'veterinarian' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('vet_appointments') }}">Appointments</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
@@ -112,43 +129,82 @@
         </div>
     </div>
 
-    <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-picture">
-                {% if current_user.profile_picture %}
-                    <img src="{{ url_for('static', filename=current_user.profile_picture.split('static/')[1]) }}" alt="Profile Picture">
-                {% else %}
-                    <img src="{{ url_for('static', filename='uploads/profile.png') }}" alt="Default Profile Picture">
-                {% endif %}
-            </div>
-            <h1>{{ current_user.Fullname }}</h1>
-            <h2>{{ current_user.Email }}</h2>
+    <div class="container mt-5">
+        <h1 class="mb-4">Appointments</h1>
+        <div id="calendar"></div>
+        <div class="appointments-list mt-4">
+            <h2>Upcoming Appointments</h2>
+            <div id="appointments"></div><br>
         </div>
-        <div class="profile-form">
-            <form method="POST" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.Fullname.label }}
-                    {{ form.Fullname(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Email.label }}
-                    {{ form.Email(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.profile_picture.label }}
-                    {{ form.profile_picture() }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Submit(class_='btn btn-primary') }}
-                </div>
-            </form>
-        </div>
-        
     </div>
+    <!-- <div class="container mt-5">
+        <h1 class="mb-4">List of Appointments</h1>
+        {% for appointment in appointments if appointment.status == "scheduled" %}
+        <li>
+            <div class="appointment-details">
+                <p><strong>Pet:</strong> {{ appointment.pet.name }}</p>
+                <p><strong>Owner:</strong> {{ appointment.owner.Fullname }}</p>
+                <p><strong>Date:</strong> {{ appointment.date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                <p><strong>Description:</strong> {{ appointment.description }}</p>
+                <p><strong>Status:</strong> {{ appointment.status }}</p>
+            </div>
+            <div class="appointment-buttons">
+                <a href="{{ url_for('reschedule_appointment', appointment_id=appointment.id) }}" class="btn btn-warning">Reschedule</a>
+                <a href="{{ url_for('cancel_appointment', appointment_id=appointment.id) }}" class="btn btn-danger">Cancel</a>
+            </div>
+        </li><br><hr><br>
+        {% endfor %}
 
-
+    </div> -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: '/vet/appointments/data',
+                eventClick: function(info) {
+                    // Handle event click if needed
+                }
+            });
+            calendar.render();
+
+            // Fetch appointments for the list
+            fetch('/vet/appointments/data')
+                .then(response => response.json())
+                .then(data => {
+                    const appointmentsDiv = document.getElementById('appointments');
+                    data.forEach(event => {
+                        const appointmentItem = document.createElement('div');
+                        appointmentItem.classList.add('appointment-item');
+                        appointmentItem.innerHTML = `
+                            <strong>${event.title}</strong><br>
+                            <span>${new Date(event.start).toLocaleString()}</span>
+                        `;
+                        appointmentsDiv.appendChild(appointmentItem);
+                    });
+                });
+        });
+    </script>
+
+
+
+    <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     var calendarEl = document.getElementById('calendar');
+        //     var calendar = new FullCalendar.Calendar(calendarEl, {
+        //         initialView: 'dayGridMonth',
+        //         events: '/vet/appointments/data'  // Fetch events from this URL
+        //     });
+        //     calendar.render();
+        // });
+    </script>
+
+
 
     <script type="text/javascript">
 

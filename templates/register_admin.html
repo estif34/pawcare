@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='reg-vet.css') }}"> -->
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
@@ -13,12 +15,28 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
 
     <style>
-
+        body {
+            background-color: #f0f0f0;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+        .form-register {
+            max-width: 400px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
+
     <script type="module" type="text/javascript" src="../static/mdb/js/mdb.umd.min.js"></script>
+
 
 </head>
 <body>
+    
     <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
         <div class="home-nav">
             <button data-mdb-collapse-init class="navbar-toggler" type="button"
@@ -46,10 +64,7 @@
                     </li>
                     {% if current_user.role == 'user' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('my_pets') }}">My Pets </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('my_appointments') }}">My Appointments </a>
+                        <a class="nav-link" href="#">My Pet </a>
                     </li>
                     {% endif %}
                     {% if current_user.role == 'admin' %}
@@ -64,11 +79,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('admin_reports') }}">Reports</a>
-                    </li>
-                    {% endif %}
-                    {% if current_user.role == 'veterinarian' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('vet_appointments') }}">Appointments</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
@@ -110,57 +120,51 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div><br><br>
 
-    <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-picture">
-                {% if current_user.profile_picture %}
-                    <img src="{{ url_for('static', filename=current_user.profile_picture.split('static/')[1]) }}" alt="Profile Picture">
-                {% else %}
-                    <img src="{{ url_for('static', filename='uploads/profile.png') }}" alt="Default Profile Picture">
-                {% endif %}
+    <div class="container">
+        <h1>Register Admin</h1>
+        <form method="POST" action="{{ url_for('register_admin') }}"><br>
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.fullname.label }}
+                {{ form.fullname(class="form-control") }}
+                {% for error in form.fullname.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
             </div>
-            <h1>{{ current_user.Fullname }}</h1>
-            <h2>{{ current_user.Email }}</h2>
-        </div>
-        <div class="profile-form">
-            <form method="POST" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.Fullname.label }}
-                    {{ form.Fullname(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Email.label }}
-                    {{ form.Email(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.profile_picture.label }}
-                    {{ form.profile_picture() }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Submit(class_='btn btn-primary') }}
-                </div>
-            </form>
-        </div>
-        
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+                {% for error in form.email.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="form-control") }}
+                {% for error in form.password.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.confirm_password.label }}
+                {{ form.confirm_password(class="form-control") }}
+                {% for error in form.confirm_password.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+        </form>
     </div>
 
+    <!-- Bootstrap JS and dependencies (jQuery, Popper.js) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
-    <script type="text/javascript">
 
-        function preventBack() {
-            window.history.forward();
-        }
-       
-        window.onload = function () {
-          preventBack()
-        };
 
-    
-    </script>
 </body>
 </html>

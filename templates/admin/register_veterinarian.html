@@ -67,6 +67,17 @@
                         <a class="nav-link" href="#">My Pet </a>
                     </li>
                     {% endif %}
+                    {% if current_user.role == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register_veterinarian') }}">Veterinarians</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('manage_users') }}">Pet Owners</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register_admin') }}">Register Admin </a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">Profile </a>
                     </li>
@@ -109,21 +120,38 @@
     </div><br><br>
 
     <div class="container">
-        <h1 class="text-center">Register Veterinarian</h1><br>
-        <form class="form-register" method="POST">
+        <h1>Register Veterinarian</h1>
+        <form method="POST" action="{{ url_for('register_veterinarian') }}">
+            {{ form.hidden_tag() }}
             <div class="form-group">
-                <label for="Fullname">Full Name</label>
-                <input type="text" class="form-control" id="Fullname" name="Fullname" required>
+                {{ form.fullname.label }}
+                {{ form.fullname(class="form-control") }}
+                {% for error in form.fullname.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
             </div>
             <div class="form-group">
-                <label for="Email">Email</label>
-                <input type="email" class="form-control" id="Email" name="Email" required>
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+                {% for error in form.email.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
             </div>
             <div class="form-group">
-                <label for="Password">Password</label>
-                <input type="password" class="form-control" id="Password" name="Password" required>
+                {{ form.password.label }}
+                {{ form.password(class="form-control") }}
+                {% for error in form.password.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Register</button>
+            <div class="form-group">
+                {{ form.confirm_password.label }}
+                {{ form.confirm_password(class="form-control") }}
+                {% for error in form.confirm_password.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
         </form>
     </div>
 

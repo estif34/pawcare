@@ -43,7 +43,7 @@
                     </li>
                     {% if current_user.role == 'user' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">My Pet </a>
+                        <a class="nav-link" href="{{ url_for('my_pets') }}">My Pets </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('my_appointments') }}">My Appointments </a>

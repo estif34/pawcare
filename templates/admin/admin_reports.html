@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
+    <title>Admin Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
@@ -12,13 +14,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\
     <style>
-
+        .chart-container {
+            margin-top: 50px;
+        }
     </style>
-    <script type="module" type="text/javascript" src="../static/mdb/js/mdb.umd.min.js"></script>
-
 </head>
 <body>
+    <!-- <div class="container">
+        <h1>Admin Report</h1>
+        <p>Total number of users: {{ user_count }}</p>
+        <p>Total number of vets: {{ vet_count }}</p>
+        <p>Total number of pets: {{ pet_count }}</p>
+        <p>Total number of appointments: {{ appointment_count }}</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
+    </div> -->
     <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
         <div class="home-nav">
             <button data-mdb-collapse-init class="navbar-toggler" type="button"
@@ -33,10 +44,6 @@
             </div>
             <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
                 <ul class="navbar-nav mb-1 mb-lg-0">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href=""> </a>
-                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="{{ url_for('home') }} ">Home</a>
@@ -112,55 +119,76 @@
         </div>
     </div>
 
-    <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-picture">
-                {% if current_user.profile_picture %}
-                    <img src="{{ url_for('static', filename=current_user.profile_picture.split('static/')[1]) }}" alt="Profile Picture">
-                {% else %}
-                    <img src="{{ url_for('static', filename='uploads/profile.png') }}" alt="Default Profile Picture">
-                {% endif %}
+    <div class="container">
+        <h1 class="mt-4">Admin Reports</h1>
+        <div class="row chart-container">
+            <div class="col-md-6">
+                <h3>Appointments by Vet</h3>
+                <canvas id="appointmentsPieChart" width="400" height="400"></canvas>
             </div>
-            <h1>{{ current_user.Fullname }}</h1>
-            <h2>{{ current_user.Email }}</h2>
+            <div class="col-md-6">
+                <h3>System Counts</h3>
+                <canvas id="systemCountsBarChart" width="400" height="400"></canvas>
+            </div>
         </div>
-        <div class="profile-form">
-            <form method="POST" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.Fullname.label }}
-                    {{ form.Fullname(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Email.label }}
-                    {{ form.Email(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.profile_picture.label }}
-                    {{ form.profile_picture() }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Submit(class_='btn btn-primary') }}
-                </div>
-            </form>
-        </div>
-        
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/admin/reports/appointments_by_vet')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('appointmentsPieChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.values,
+                                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                                hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true
+                        }
+                    });
+                });
 
+            fetch('/admin/reports/system_counts')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('systemCountsBarChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Count',
+                                data: data.values,
+                                backgroundColor: '#36A2EB',
+                                borderColor: '#36A2EB',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                });
+        });
+    </script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-    <script type="text/javascript">
-
-        function preventBack() {
-            window.history.forward();
-        }
-       
-        window.onload = function () {
-          preventBack()
-        };
 
     
-    </script>
+
 </body>
 </html>

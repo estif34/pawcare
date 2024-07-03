@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
+    <title>Edit Veterinarian</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
@@ -62,14 +62,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('register_admin') }}">Register Admin </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_reports') }}">Reports</a>
-                    </li>
-                    {% endif %}
-                    {% if current_user.role == 'veterinarian' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('vet_appointments') }}">Appointments</a>
-                    </li>
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">Profile </a>
@@ -112,39 +104,33 @@
         </div>
     </div>
 
-    <div class="profile-container">
-        <div class="profile-header">
-            <div class="profile-picture">
-                {% if current_user.profile_picture %}
-                    <img src="{{ url_for('static', filename=current_user.profile_picture.split('static/')[1]) }}" alt="Profile Picture">
-                {% else %}
-                    <img src="{{ url_for('static', filename='uploads/profile.png') }}" alt="Default Profile Picture">
-                {% endif %}
+    <div class="container">
+        <h1>Edit Veterinarian</h1>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.fullname.label }}
+                {{ form.fullname(class="form-control") }}
+                {% for error in form.fullname.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
             </div>
-            <h1>{{ current_user.Fullname }}</h1>
-            <h2>{{ current_user.Email }}</h2>
-        </div>
-        <div class="profile-form">
-            <form method="POST" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.Fullname.label }}
-                    {{ form.Fullname(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Email.label }}
-                    {{ form.Email(size=32) }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.profile_picture.label }}
-                    {{ form.profile_picture() }}
-                </div><br>
-                <div class="form-group">
-                    {{ form.Submit(class_='btn btn-primary') }}
-                </div>
-            </form>
-        </div>
-        
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control") }}
+                {% for error in form.email.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.status.label }}
+                {{ form.status(class="form-control") }}
+                {% for error in form.status.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+        </form>
     </div>
 
 

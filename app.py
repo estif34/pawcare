@@ -1,11 +1,11 @@
-from flask import Flask, render_template,session,redirect,abort, request,flash,g,url_for
+from flask import Flask, render_template,session,redirect,abort, request,flash,g,url_for, jsonify
 from google_auth_oauthlib.flow import Flow
 from flask_mail import Mail,Message
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_session import Session
-from models import Users,RegistrationForm,db,LoginForm, Vets, Appointment, ProfileForm, Pet, PetForm, AppointmentForm, CancelAppointmentForm, RescheduleAppointmentForm
+from models import Users,RegistrationForm,db,LoginForm, Vets, Appointment, ProfileForm, Pet, PetForm, AppointmentForm, CancelAppointmentForm, RescheduleAppointmentForm, AdminRegistrationForm, EditVetForm, EditUserForm
 from random import *
-import pathlib,os, secrets
+import pathlib,os, secrets, json
 from flask_bcrypt import Bcrypt  
 from dotenv import load_dotenv   
 from googleapiclient.discovery import build
@@ -16,6 +16,7 @@ from flask_bcrypt import generate_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, date, time
 from PIL import Image
+from sqlalchemy import func
 
 
 load_dotenv()
@@ -421,22 +422,22 @@ def manage_veterinarians():
     veterinarians = Users.query.filter_by(role='pending_veterinarian').all()
     return render_template('admin/manage_veterinarians.html', veterinarians=veterinarians)
 
-# app.py
-@app.route('/admin/register_veterinarian', methods=['GET', 'POST'])
-@admin_required
+@app.route('/register_veterinarian', methods=['GET', 'POST'])
+@login_required
 def register_veterinarian():
-    if request.method == 'POST':
-        fullname = request.form.get('Fullname')
-        email = request.form.get('Email')
-        password = request.form.get('Password')
-
-        veterinarian = Users(Fullname=fullname, Email=email, Password=password, role='veterinarian')#, status='approved')
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+    form = AdminRegistrationForm()
+    if form.validate_on_submit():
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        veterinarian = Users(Fullname=form.fullname.data, Email=form.email.data, Password=form.password.data, role='veterinarian')
         db.session.add(veterinarian)
         db.session.commit()
-        flash('Veterinarian registered successfully!', 'success')
-        return redirect(url_for('manage_veterinarians'))
-
-    return render_template('admin/register_veterinarian.html')
+        flash('Veterinarian account has been created!', 'success')
+        return redirect(url_for('home'))
+    
+    return render_template('admin/register_veterinarian.html', form=form)
 
 
 def allowed_file(filename):
@@ -620,6 +621,197 @@ def my_pets():
 def my_appointments():
     appointments = current_user.owner_appointments
     return render_template('my_appointments.html', appointments=appointments)
+
+
+@app.route('/register_admin', methods=['GET', 'POST'])
+@login_required
+def register_admin():
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+    form = AdminRegistrationForm()
+    if form.validate_on_submit():
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        admin = Users(Fullname=form.fullname.data, Email=form.email.data, Password=form.password.data, role='admin')
+        db.session.add(admin)
+        db.session.commit()
+        flash('Admin account has been created!', 'success')
+        return redirect(url_for('home'))
+    
+    return render_template('register_admin.html', form=form)
+
+@app.route('/manage_vets', methods=['GET', 'POST'])
+@login_required
+def manage_vets():
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+    
+    vets = Users.query.filter_by(role='veterinarian').all()
+    return render_template('manage_vets.html', vets=vets)
+
+@app.route('/manage_users', methods=['GET', 'POST'])
+@login_required
+def manage_users():
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+    
+    users = Users.query.filter_by(role='user').all()
+    return render_template('manage_users.html', users=users)
+
+@app.route('/edit_vet/<int:vet_id>', methods=['GET', 'POST'])
+@login_required
+def edit_vet(vet_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+
+    vet = Users.query.get_or_404(vet_id)
+    form = EditVetForm()
+    if form.validate_on_submit():
+        vet.Fullname = form.fullname.data
+        vet.Email = form.email.data
+        vet.status = form.status.data
+        db.session.commit()
+        flash('Veterinarian details have been updated!', 'success')
+        return redirect(url_for('manage_vets'))
+    
+    elif request.method == 'GET':
+        form.fullname.data = vet.Fullname
+        form.email.data = vet.Email
+        # form.status.data = vet.status
+    
+    return render_template('edit_vet.html', form=form)
+
+@app.route('/delete_vet/<int:vet_id>', methods=['GET', 'POST'])
+@login_required
+def delete_vet(vet_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+
+    vet = Users.query.get_or_404(vet_id)
+    db.session.delete(vet)
+    db.session.commit()
+    flash('Veterinarian account has been deleted!', 'success')
+    return redirect(url_for('manage_vets'))
+
+@app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+
+    user = Users.query.get_or_404(user_id)
+    form = EditUserForm()
+    if form.validate_on_submit():
+        user.Fullname = form.fullname.data
+        user.Email = form.email.data
+        db.session.commit()
+        flash('User details have been updated!', 'success')
+        return redirect(url_for('manage_users'))
+    
+    elif request.method == 'GET':
+        form.fullname.data = user.Fullname
+        form.email.data = user.Email
+    
+    return render_template('edit_user.html', form=form)
+
+@app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def delete_user(user_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+
+    user = Users.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('User account has been deleted!', 'success')
+    return redirect(url_for('manage_users'))
+
+@app.route('/vet/appointments')
+@login_required
+def vet_appointments():
+    if current_user.role != 'veterinarian':
+        abort(403)
+    return render_template('vet_appointments.html')
+
+@app.route('/vet/appointments/data')
+@login_required
+def vet_appointments_data():
+    if current_user.role != 'veterinarian':
+        abort(403)
+    appointments =Appointment.query.filter_by(vet_id=current_user.id).all()
+    events = []
+    for appointment in appointments:
+        events.append({
+            'title': f"{appointment.pet.name} with {appointment.owner.Fullname}",
+            'start': appointment.date.isoformat(),
+            # 'end':appointment.date.isoformat()
+        })
+    return jsonify(events)    
+
+# Route to fetch data for the pie chart (appointments by vet)
+@app.route('/admin/reports/appointments_by_vet')
+@login_required
+def appointments_by_vet():
+    if current_user.role != 'admin':
+        abort(403)  # Forbidden if not an admin
+
+    # Query to get the count of appointments per vet
+    appointments_data = db.session.query(
+        Users.Fullname, func.count(Appointment.id)
+    ).join(Appointment, Users.id == Appointment.vet_id).group_by(Users.Fullname).all()
+
+    data = {
+        'labels': [vet for vet, _ in appointments_data],
+        'values': [count for _, count in appointments_data]
+    }
+
+    return jsonify(data)
+
+# Route to fetch data for the bar chart (counts of pets, vets, and owners)
+@app.route('/admin/reports/system_counts')
+@login_required
+def system_counts():
+    if current_user.role != 'admin':
+        abort(403)  # Forbidden if not an admin
+
+    pets_count = db.session.query(func.count(Pet.id)).scalar()
+    vets_count = db.session.query(func.count(Users.id)).filter_by(role='veterinarian').scalar()
+    owners_count = db.session.query(func.count(Users.id)).filter_by(role='user').scalar()
+
+    data = {
+        'labels': ['Pets', 'Vets', 'Owners'],
+        'values': [pets_count, vets_count, owners_count]
+    }
+
+    return jsonify(data)
+
+@app.route('/admin/reports')
+@login_required
+def admin_reports():
+    if current_user.role != 'admin':
+        abort(403)  # Forbidden if not an admin
+    return render_template('admin/admin_reports.html')
+
+# @app.route('/appointments')
+# @login_required
+# def appointments():
+#     appointments = Appointment.query.all()
+#     appointments_list = json.dumps([{
+#         'pet_name': appointment.pet.name,
+#         'vet_name': appointment.vet.Fullname,
+#         'date': appointment.date.isoformat(),
+#         'description': appointment.description,
+#         'url': url_for('reschedule_appointment', appointment_id=appointment.id)
+#     } for appointment in appointments if appointment.status == "scheduled"])
+#     appointments_json = json.dumps(appointments_list)
+#     return render_template('my_appointments.html', appointments=appointments_json)
+
 
 
 with app.app_context():
