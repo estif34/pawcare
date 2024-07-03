@@ -1,5 +1,6 @@
 # PetCo: A Pet Healthcare Companion Web Application for Pet Owners
 
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white) ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ## Description
 PetCo is a web application designed to assist Kenyan pet owners in managing their pets' healthcare needs. The platform provides functionalities such as scheduling appointments, notifications for veterinary appointments, and maintaining a comprehensive health record for pets. The application aims to simplify pet healthcare management, ensuring pets receive timely and proper care.
 
