@@ -622,6 +622,19 @@ def my_appointments():
     appointments = current_user.owner_appointments
     return render_template('my_appointments.html', appointments=appointments)
 
+# @app.route('/appointments')
+# @login_required
+# def appointments():
+#     appointments = Appointment.query.all()
+#     appointments_list = json.dumps([{
+#         'pet_name': appointment.pet.name,
+#         'vet_name': appointment.vet.Fullname,
+#         'date': appointment.date.isoformat(),
+#         'description': appointment.description,
+#         'url': url_for('reschedule_appointment', appointment_id=appointment.id)
+#     } for appointment in appointments if appointment.status == "scheduled"])
+#     appointments_json = json.dumps(appointments_list)
+#     return render_template('my_appointments.html', appointments=appointments_json)
 
 @app.route('/register_admin', methods=['GET', 'POST'])
 @login_required
@@ -798,19 +811,7 @@ def admin_reports():
         abort(403)  # Forbidden if not an admin
     return render_template('admin/admin_reports.html')
 
-# @app.route('/appointments')
-# @login_required
-# def appointments():
-#     appointments = Appointment.query.all()
-#     appointments_list = json.dumps([{
-#         'pet_name': appointment.pet.name,
-#         'vet_name': appointment.vet.Fullname,
-#         'date': appointment.date.isoformat(),
-#         'description': appointment.description,
-#         'url': url_for('reschedule_appointment', appointment_id=appointment.id)
-#     } for appointment in appointments if appointment.status == "scheduled"])
-#     appointments_json = json.dumps(appointments_list)
-#     return render_template('my_appointments.html', appointments=appointments_json)
+
 
 
 
