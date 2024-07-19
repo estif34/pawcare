@@ -1,175 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base/base.html" %}
+{% block title %}Home{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
-    <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
-    <!-- <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" /> -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='lock-sesh.css') }}">
-    
-    <script type="module" type="text/javascript" src="../static/mdb/js/mdb.umd.min.js"></script>
-
-</head>
-
-<body>
-    <div class="land-navi">
-        <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
-            <div class="home-nav">
-                <button data-mdb-collapse-init class="navbar-toggler" type="button"
-                    data-mdb-target="#navbarCenteredExample" aria-controls="navbarCenteredExample" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="home-petco">
-                    <span>PetCo
-                        <img src="{{ url_for('static', filename='images/pet-care.png') }}" id="logo" />
-                    </span>
-                </div>
-                <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
-                    <ul class="navbar-nav mb-1 mb-lg-0">
-
-                        <li class="nav-item">
-                            <a class="nav-link" href=""> </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">About </a>
-                        </li>
-                        {% if current_user.role == 'admin' %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('manage_vets') }}">Veterinarians </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('manage_users') }}">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register_admin') }}">Register Admin</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin_reports') }}">Reports</a>
-                        </li>
-                        {% endif %}
-                        {% if current_user.role == 'veterinarian' %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('vet_appointments') }}">Appointments</a>
-                        </li>
-                        {% endif %}
-                        {% if current_user.role == 'user' %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('my_pets') }}">My Pets </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('my_appointments') }}">My Appointments </a>
-                        </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/profile">Profile </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="menu">
-                    <div class="nav-item">
-                        <a style="color:#FCA311; font-size:18px;float:right;margin-right:8px;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin-left:30px;"
-                            class="nav-link" href="{{ url_for('checkPass') }}">Lock</a>
-                    </div>
-                    <div class="nav-item">
-                        <a style="z-index:2; color:#FCA311; padding-left:15px;font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"
-                            class="nav-link" data-mdb-ripple-init data-mdb-modal-init
-                            data-mdb-target="#staticBackdrop">Log out</a>
-                    </div>
-
-
-                </div>
-            </div>
-        </nav>
-
-        <!-- Lock Modal -->
-
-        <!-- Logout Modal -->
-        <div class="modal fade" id="staticBackdrop" data-mdb-backdrop="static" data-mdb-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h6 class="modal-title" id="staticBackdropLabel" style="font-weight: 600;text-align: center;">
-                            Are you sure you want to Log Out?</h6>
-                        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body"> If you do decide to Log Out, all your session will be lost</div>
-                    <div class="modal-footer">
-                        <button type="button" style="background-color:#000000; color:#ffffff;" class="btn btn-secondary"
-                            data-mdb-ripple-init data-mdb-dismiss="modal"> No, return to session</button>
-                        <a type="button" style="background-color:#FCA311 ;" class="btn btn-primary" id="confirmLogout"
-                            data-mdb-ripple-init href="/logout">Log Out</a>
-                    </div>
-                </div>
-            </div>
+{% block content %}
+<div class="container">
+        <div>
+            <h1 color="#00000" style="font-family:'Courier New', Courier, monospace;">WELCOME TO PAW CARE</h1>
         </div>
-
-        <div class="illustration">
-            <div class="vet">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#c2d2d3"
-                        d="M52.3,-62.8C67.2,-49.8,78.3,-32.8,82.4,-13.8C86.6,5.1,83.8,26,73.5,41.2C63.3,56.5,45.5,66.2,26.9,72.3C8.4,78.3,-10.9,80.7,-24.7,73.3C-38.4,65.9,-46.6,48.7,-56.3,32.3C-66,15.8,-77.4,0.1,-75.7,-14C-74,-28.2,-59.4,-40.8,-44.6,-53.8C-29.8,-66.8,-14.9,-80.2,1.9,-82.5C18.7,-84.8,37.4,-75.8,52.3,-62.8Z"
-                        transform="translate(100 100)" />
-                </svg>
-                <img src="{{ url_for('static', filename='images/Vet-pana.png') }}" class="vet-dog" />
-            </div>
-            <div class="row">
-                <div class="txt">
-                    <h1 color="#00000">WELCOME TO PETCO</h1>
-                </div>
-                <!-- <div class="column1">
-                    <p>Book Appointment</p>
-                </div> -->
-            </div>
+    <div class="illustration">
+        <div class="vet container">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#c2d2d3"
+                    d="M52.3,-62.8C67.2,-49.8,78.3,-32.8,82.4,-13.8C86.6,5.1,83.8,26,73.5,41.2C63.3,56.5,45.5,66.2,26.9,72.3C8.4,78.3,-10.9,80.7,-24.7,73.3C-38.4,65.9,-46.6,48.7,-56.3,32.3C-66,15.8,-77.4,0.1,-75.7,-14C-74,-28.2,-59.4,-40.8,-44.6,-53.8C-29.8,-66.8,-14.9,-80.2,1.9,-82.5C18.7,-84.8,37.4,-75.8,52.3,-62.8Z"
+                    transform="translate(100 100)" />
+            </svg>
+            <img src="{{ url_for('static', filename='images/vet-home2.jpg') }}" class="vet-dog" />
         </div>
-
-        <div class="demo">
-            <p>Discover PetCo, your ultimate pet companion in Kenya! Whether you're a proud pet parent or planning to be
-                one, PetCo offers everything you need for your furry friends.</p>
+        <div >
+            
+            <!-- <div class="column1">
+                <p>Book Appointment</p>
+            </div> -->
+            {% if current_user.role == 'user' %}
+            <a href="{{ url_for('register_pet') }}" class="btn btn-primary">Register Your Pet</a>
+            {% endif %}
         </div>
     </div>
-
-
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-
-    <script type="text/javascript">
-
-        function preventBack() {
-            window.history.forward();
-        }
-       
-        window.onload = function () {
-          preventBack()
-        };
-
     
-    </script>
-    <!-- <script>
-        function preventBack() {
-            history.pushState(null, null, location.href);
-            window.addEventListener('popstate', function(event) {
-                window.location.href = 'SignIn.html'; // Redirect to login page
-            });
-        }
+    <div class="demo">
+        <p>Discover Paw Care! At Pew Care, we are passionate about providing the highest quality care for your beloved pets.</p>
+    </div>
+</div>
+{% endblock %}
 
-        // Call the function when the page loads
-        window.onload = preventBack;
-    </script> -->
-
-</body>
-
-</html>

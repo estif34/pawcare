@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Appointment Booked</title>
+    <title>Appointment Rejected</title>
 </head>
 <body>
-    <h1>Appointment Booked</h1>
-    <p>Dear {{ appointment.owner.Fullname }}, </p>
-    <p>Your appointment has been successfully booked.</p>
+    <h1>Appointment Rejected</h1>
+    <p>Dear {{ appointment.vet.Fullname }}, </p>
+    <p>An appointment has been successfully rejected.</p>
     <p>Pet: {{ appointment.pet.name }}</p>
-    <p>Vet: {{ appointment.vet.Fullname }}</p>
+    <p>Owner: {{ appointment.owner.Fullname }}</p>
     <p>Description: {{ appointment.description }}</p>
     <p>Date: {{ appointment.date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
     <p>Thank you for using our service!</p>

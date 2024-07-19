@@ -1,18 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Report</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
+{% extends"base/base.html" %}
+{% block head %}
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\
     <style>
@@ -20,8 +7,9 @@
             margin-top: 50px;
         }
     </style>
-</head>
-<body>
+    {% endblock %}
+
+{% block content %}
     <!-- <div class="container">
         <h1>Admin Report</h1>
         <p>Total number of users: {{ user_count }}</p>
@@ -30,108 +18,24 @@
         <p>Total number of appointments: {{ appointment_count }}</p>
         <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
     </div> -->
-    <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
-        <div class="home-nav">
-            <button data-mdb-collapse-init class="navbar-toggler" type="button"
-                data-mdb-target="#navbarCenteredExample" aria-controls="navbarCenteredExample" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="home-petco">
-                <span>PetCo
-                    <img src="{{ url_for('static', filename='images/pet-care.png') }}" id="logo" />
-                </span>
-            </div>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
-                <ul class="navbar-nav mb-1 mb-lg-0">
-
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('home') }} ">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About </a>
-                    </li>
-                    {% if current_user.role == 'user' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('my_pets') }}">My Pets </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('my_appointments') }}">My Appointments </a>
-                    </li>
-                    {% endif %}
-                    {% if current_user.role == 'admin' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('manage_vets') }}">Veterinarians</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('manage_users') }}">Pet Owners</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register_admin') }}">Register Admin </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_reports') }}">Reports</a>
-                    </li>
-                    {% endif %}
-                    {% if current_user.role == 'veterinarian' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('vet_appointments') }}">Appointments</a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile">Profile </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="menu">
-                <div class="nav-item">
-                    <a style="color:#FCA311; font-size:18px;float:right;margin-right:8px;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin-left:30px;"
-                        class="nav-link" href="{{ url_for('checkPass') }}">Lock</a>
-                </div>
-                <div class="nav-item">
-                    <a style="z-index:2; color:#FCA311; padding-left:15px;font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"
-                        class="nav-link" data-mdb-ripple-init data-mdb-modal-init
-                        data-mdb-target="#staticBackdrop">Log out</a>
-                </div>
-
-
-            </div>
-        </div>
-    </nav>
-    <div class="modal fade" id="staticBackdrop" data-mdb-backdrop="static" data-mdb-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title" id="staticBackdropLabel" style="font-weight: 600;text-align: center;">
-                        Are you sure you want to Log Out?</h6>
-                    <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body"> If you do decide to Log Out, all your session will be lost</div>
-                <div class="modal-footer">
-                    <button type="button" style="background-color:#000000; color:#ffffff;" class="btn btn-secondary"
-                        data-mdb-ripple-init data-mdb-dismiss="modal"> No, return to session</button>
-                    <a type="button" style="background-color:#FCA311 ;" class="btn btn-primary" id="confirmLogout"
-                        data-mdb-ripple-init href="/logout">Log Out</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <div class="container">
         <h1 class="mt-4">Admin Reports</h1>
         <div class="row chart-container">
-            <div class="col-md-6">
+            <div class="profile-container col-md-6">
                 <h3>Appointments by Vet</h3>
                 <canvas id="appointmentsPieChart" width="400" height="400"></canvas>
-            </div>
-            <div class="col-md-6">
+            </div><hr>
+            <div class="profile-container col-md-6">
                 <h3>System Counts</h3>
                 <canvas id="systemCountsBarChart" width="400" height="400"></canvas>
             </div>
         </div>
     </div>
+    <br>
+    {% endblock %}
+    {% block scripts %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('/admin/reports/appointments_by_vet')
@@ -186,9 +90,4 @@
                 });
         });
     </script>
-
-
-    
-
-</body>
-</html>
+    {% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base/base.html" %}
+{% block head %}
+    <style>
+        /* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar-nav .nav-item .nav-link {
+    font-size: 1rem;
+}
+
+.about-us-section {
+    padding: 60px 0;
+}
+
+.about-us-section h1, .about-us-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.about-us-section p {
+    font-size: 1.2rem;
+}
+
+.about-us-section .img-fluid {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.team-member {
+    margin-bottom: 30px;
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+}
+
+    </style>
+{% endblock %}
+{% block content %}
+<section class="about-us-section py-5">
+    <div class="container">
+        <h1 class="text-center mb-4">About Us</h1>
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Our Story</h2>
+                <p>At Paw Care, we are passionate about providing the highest quality care for your beloved pets. Founded in 2020, our mission is to ensure that every pet receives the best possible healthcare in a compassionate and caring environment.</p>
+            </div>
+            <div class="col-lg-6">
+                <h2>Our Mission</h2>
+                <p>Our mission is to deliver exceptional veterinary care that enhances the lives of pets and their families. We strive to build lasting relationships with our clients through trust, transparency, and excellence in all that we do.</p>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-lg-6">
+                <h2>Our Vision</h2>
+                <p>We envision a world where every pet receives the care they need to live a happy and healthy life. We aim to be the leading provider of veterinary services, known for our commitment to excellence, innovation, and community involvement.</p>
+            </div>
+            <div class="col-lg-6">
+                <h2>Our Values</h2>
+                <ul class="list-unstyled">
+                    <li><strong>Compassion:</strong> We treat every pet and their family with kindness and empathy.</li>
+                    <li><strong>Excellence:</strong> We are committed to providing the highest standard of care.</li>
+                    <li><strong>Integrity:</strong> We conduct ourselves with honesty and transparency.</li>
+                    <li><strong>Innovation:</strong> We continuously seek new and better ways to improve pet health.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <h2 class="text-center">Meet Our Team</h2>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="team-member">
+                            <img src="{{ url_for('static', filename='images/team1.jpg') }}" class="img-fluid rounded-circle mb-3" alt="Dr. Smith">
+                            <h4>Dr. Ketema</h4>
+                            <p>Chief Veterinarian</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="team-member">
+                            <img src="{{ url_for('static', filename='images/team2.jpg') }}" class="img-fluid rounded-circle mb-3" alt="Dr. Doe">
+                            <h4>Dr. David</h4>
+                            <p>Senior Veterinarian</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="team-member">
+                            <img src="{{ url_for('static', filename='images/team3.jpg') }}" class="img-fluid rounded-circle mb-3" alt="Dr. Johnson">
+                            <h4>Dr. Vincent</h4>
+                            <p>Veterinarian</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

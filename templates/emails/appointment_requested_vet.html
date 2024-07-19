@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Requested</title>
+</head>
+<body>
+    <h1>Appointment Requested</h1>
+    <p>Dear {{ appointment.vet.Fullname }}, </p>
+    <p>An appointment has been successfully requested.</p>
+    <p>Pet: {{ appointment.pet.name }}</p>
+    <p>Owner: {{ current_user.Fullname }}</p>
+    <p>Description: {{ appointment.description }}</p>
+    <p>Date: {{ appointment.date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <p>This appointment is available for approval.</p>
+</body>
+</html>

@@ -1,17 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vet Appointments</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% extends"base/base.html" %}
+{% block head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
     <style>
         body {
@@ -35,127 +23,53 @@
             border-radius: 5px;
         }
     </style>
-    <script type="module" type="text/javascript" src="../static/mdb/js/mdb.umd.min.js"></script>
-
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg shadow-none" style="background-color: #ffffff;" data-mdb-theme="light">
-        <div class="home-nav">
-            <button data-mdb-collapse-init class="navbar-toggler" type="button"
-                data-mdb-target="#navbarCenteredExample" aria-controls="navbarCenteredExample" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="home-petco">
-                <span>PetCo
-                    <img src="{{ url_for('static', filename='images/pet-care.png') }}" id="logo" />
-                </span>
-            </div>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
-                <ul class="navbar-nav mb-1 mb-lg-0">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href=""> </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('home') }} ">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About </a>
-                    </li>
-                    {% if current_user.role == 'user' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('my_pets') }}">My Pets </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('my_appointments') }}">My Appointments </a>
-                    </li>
-                    {% endif %}
-                    {% if current_user.role == 'veterinarian' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('vet_appointments') }}">Appointments</a>
-                    </li>
-                    {% endif %}
-                    {% if current_user.role == 'admin' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('manage_vets') }}">Veterinarians</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('manage_users') }}">Pet Owners</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register_admin') }}">Register Admin </a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile">Profile </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="menu">
-                <div class="nav-item">
-                    <a style="color:#FCA311; font-size:18px;float:right;margin-right:8px;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin-left:30px;"
-                        class="nav-link" href="{{ url_for('checkPass') }}">Lock</a>
-                </div>
-                <div class="nav-item">
-                    <a style="z-index:2; color:#FCA311; padding-left:15px;font-size:18px;float:right;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"
-                        class="nav-link" data-mdb-ripple-init data-mdb-modal-init
-                        data-mdb-target="#staticBackdrop">Log out</a>
-                </div>
-
-
-            </div>
-        </div>
-    </nav>
-    <div class="modal fade" id="staticBackdrop" data-mdb-backdrop="static" data-mdb-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title" id="staticBackdropLabel" style="font-weight: 600;text-align: center;">
-                        Are you sure you want to Log Out?</h6>
-                    <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body"> If you do decide to Log Out, all your session will be lost</div>
-                <div class="modal-footer">
-                    <button type="button" style="background-color:#000000; color:#ffffff;" class="btn btn-secondary"
-                        data-mdb-ripple-init data-mdb-dismiss="modal"> No, return to session</button>
-                    <a type="button" style="background-color:#FCA311 ;" class="btn btn-primary" id="confirmLogout"
-                        data-mdb-ripple-init href="/logout">Log Out</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    {% endblock %}
+    {% block content %}
+    
     <div class="container mt-5">
-        <h1 class="mb-4">Appointments</h1>
-        <div id="calendar"></div>
+    <h1 class="mb-4">Appointments</h1>
+    <h1>Pending Appointments</h1>
+    <table class="table table-hover table-bordered">
+    <thead class="thead-light">
+        <tr>
+            <th><strong>Pet</strong></th>
+            <th><strong>Date</strong></th>
+            <th><strong>Description</strong></th>
+            <th><strong>Action</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in appointments %}
+        <tr>
+            <td>{{ appointment.pet.name }}</td>
+            <td>{{ appointment.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ appointment.description }}</td>
+            <td>
+                <form action="{{ url_for('approve_appointment', appointment_id=appointment.id) }}" method="post">
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+                <form action="{{ url_for('reject_appointment', appointment_id=appointment.id) }}" method="post">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this appointment?')">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+
+        
+        <!-- <div id="calendar"></div> -->
         <div class="appointments-list mt-4">
             <h2>Upcoming Appointments</h2>
             <div id="appointments"></div><br>
         </div>
-    </div>
-    <!-- <div class="container mt-5">
-        <h1 class="mb-4">List of Appointments</h1>
-        {% for appointment in appointments if appointment.status == "scheduled" %}
-        <li>
-            <div class="appointment-details">
-                <p><strong>Pet:</strong> {{ appointment.pet.name }}</p>
-                <p><strong>Owner:</strong> {{ appointment.owner.Fullname }}</p>
-                <p><strong>Date:</strong> {{ appointment.date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
-                <p><strong>Description:</strong> {{ appointment.description }}</p>
-                <p><strong>Status:</strong> {{ appointment.status }}</p>
-            </div>
-            <div class="appointment-buttons">
-                <a href="{{ url_for('reschedule_appointment', appointment_id=appointment.id) }}" class="btn btn-warning">Reschedule</a>
-                <a href="{{ url_for('cancel_appointment', appointment_id=appointment.id) }}" class="btn btn-danger">Cancel</a>
-            </div>
-        </li><br><hr><br>
-        {% endfor %}
+            <a href="{{ url_for('vet_book_appointment') }}" class="btn btn-primary">Book Follow-up Appointment</a>
+    </div><br>
 
-    </div> -->
+
+    {% endblock %}
+
+    {% block scripts %}
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -172,51 +86,40 @@
                 }
             });
             calendar.render();
-
-            // Fetch appointments for the list
-            fetch('/vet/appointments/data')
-                .then(response => response.json())
-                .then(data => {
-                    const appointmentsDiv = document.getElementById('appointments');
-                    data.forEach(event => {
-                        const appointmentItem = document.createElement('div');
-                        appointmentItem.classList.add('appointment-item');
-                        appointmentItem.innerHTML = `
-                            <strong>${event.title}</strong><br>
-                            <span>${new Date(event.start).toLocaleString()}</span>
-                        `;
-                        appointmentsDiv.appendChild(appointmentItem);
-                    });
-                });
         });
-    </script>
-
-
-
-    <script>
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     var calendarEl = document.getElementById('calendar');
-        //     var calendar = new FullCalendar.Calendar(calendarEl, {
-        //         initialView: 'dayGridMonth',
-        //         events: '/vet/appointments/data'  // Fetch events from this URL
-        //     });
-        //     calendar.render();
+            //Fetch appointments for the list
+        //     fetch('/vet/appointments/data')
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             const appointmentsDiv = document.getElementById('appointments');
+        //             data.forEach(event => {
+        //                 const appointmentItem = document.createElement('div');
+        //                 appointmentItem.classList.add('appointment-item');
+        //                 appointmentItem.innerHTML = `
+        //                     <strong>${event.title}</strong><br>
+        //                     <span>${new Date(event.start).toLocaleString()}</span>
+        //                 `;
+        //                 appointmentsDiv.appendChild(appointmentItem);
+        //             });
+        //         });
         // });
+
+        fetch('/vet/appointments/data')
+        .then(response => response.json())
+        .then(data => {
+            const appointmentsDiv = document.getElementById('appointments');
+            data.forEach(event => {
+                const appointmentItem = document.createElement('div');
+                appointmentItem.classList.add('appointment-item');
+                appointmentItem.innerHTML = `
+                    <a href="/owner/view_medical_records/${event.pet_id}">
+                         <strong>${event.title}</strong>
+                         <span>${new Date(event.start).toLocaleString()}</span>
+                    </a>
+                 `;
+                appointmentsDiv.appendChild(appointmentItem);
+            });
+        });
+
     </script>
-
-
-
-    <script type="text/javascript">
-
-        function preventBack() {
-            window.history.forward();
-        }
-       
-        window.onload = function () {
-          preventBack()
-        };
-
-    
-    </script>
-</body>
-</html>
+    {% endblock %}
