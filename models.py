@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
-from wtforms import StringField, PasswordField, SubmitField, Form, validators
+from wtforms import StringField, PasswordField, SubmitField, Form, validators, FileField, HiddenField, IntegerField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 import re
 
@@ -14,11 +14,16 @@ class Users(UserMixin, db.Model):
     Fullname = db.Column(db.String(250), nullable=False)
     Email = db.Column(db.String(250), unique=True, nullable=False)
     Password = db.Column(db.String(250), nullable=False)
+    role = db.Column(db.String(50), nullable=False, default='user')  # Added role field
+    profile_picture = db.Column(db.String(250), nullable=True)
+    pets = db.relationship('Pet', backref='owner', lazy=True)
 
-    def __init__(self, Fullname, Email, Password):
+
+    def __init__(self, Fullname, Email, Password, role):
         self.Fullname = Fullname
         self.Email = Email
         self.Password = self.set_password(Password)
+        self.role = role
 
     def check_password(self, Password):
         return bcrypt.check_password_hash(self.Password, Password)
@@ -27,11 +32,13 @@ class Users(UserMixin, db.Model):
         return bcrypt.generate_password_hash(Password).decode('utf-8')
     
 
-class Pets(UserMixin, db.Model):
+class Pet(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    PetName = db.Column(db.String(250), nullable=False)
-    Species = db.Column(db.String(250), unique=True, nullable=False)
-    OwnerId = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(250), nullable=False)
+    species = db.Column(db.String(250), nullable=False)
+    breed = db.Column(db.String(250), nullable=True)
+    age=db.Column(db.Integer, nullable=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 
 class Vets(UserMixin, db.Model):
@@ -56,6 +63,7 @@ class RegistrationForm(FlaskForm):
     Email = StringField('Email', [Email()])
     Password = PasswordField('Password', validators=[Length(min=6)])
     Confirm_Password = PasswordField('Confirm_Password', validators=[DataRequired()])
+    role = HiddenField('Role', default='user')
     Submit = SubmitField('Create_Account')
 
     def validate_Email(self, field):
@@ -73,8 +81,8 @@ class RegistrationForm(FlaskForm):
                     raise ValidationError('Password must contain at least one number.')
 
 class LoginForm(FlaskForm):
-    Email = StringField('Email')
-    Password = PasswordField('Password')
+    Email = StringField('Email', validators=[DataRequired(), Email()])
+    Password = PasswordField('Password', validators=[DataRequired()])
     Submit = SubmitField('Login')
 
     def validate_Email(self, field):
@@ -90,3 +98,17 @@ class LoginForm(FlaskForm):
 #     New_Password =  PasswordField('New_Password')
 #     Confirm_Password = PasswordField('Confirm_Password')
 #     Submit = SubmitField('Reset')
+
+
+class ProfileForm(FlaskForm):
+    Fullname = StringField('Fullname', validators=[DataRequired()])
+    Email = StringField('Email', [Email()])
+    profile_picture = FileField('Profile Picture')
+    Submit = SubmitField('Update Profile')
+
+class PetForm(FlaskForm):
+    name = StringField('Pet Name', validators=[DataRequired()])
+    species = StringField('Species', validators=[DataRequired()])
+    breed = StringField('Breed')
+    age = IntegerField('Age')
+    submit = SubmitField('Register Pet')

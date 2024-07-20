@@ -1,9 +1,9 @@
 from flask import Flask, render_template,session,redirect,abort, request,flash,g,url_for
 from google_auth_oauthlib.flow import Flow
 from flask_mail import Mail,Message
-from flask_login import LoginManager, login_user, logout_user, current_user
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_session import Session
-from models import Users,RegistrationForm,db,LoginForm
+from models import Users,RegistrationForm,db,LoginForm, Vets, ProfileForm, Pet, PetForm
 from random import *
 import pathlib,os
 from flask_bcrypt import Bcrypt  
@@ -11,6 +11,10 @@ from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from pathlib import Path
 from bcrypt import hashpw, gensalt
+from functools import wraps
+from flask_bcrypt import generate_password_hash
+from werkzeug.utils import secure_filename
+
 
 load_dotenv()
 bcrypt = Bcrypt()
@@ -34,6 +38,7 @@ app.config['MAIL_USE_SSL'] = True
 # app.secret_key = "XXX"
 app.config['SESSION_FILE_DIR'] = os.path.join(app.root_path, "sessions")
 app.config['SESSION_FILE_THRESHOLD'] = 1000
+app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 mail = Mail(app)
 # Session(app)
 
@@ -70,18 +75,22 @@ def login():
     Logform = LoginForm()
     if Logform.validate_on_submit():
         user = Users.query.filter_by(Email=Logform.Email.data).first()
-        login_user(user) 
-        otp_str = str(otp)
-        Email = Logform.Email.data
-        EmailContent = render_template("emails/log-otp-email.html", otp=otp_str)
-        msg = Message(subject="Welcome back!", sender='stephengm31@gmail.com', recipients=[Email])
-        msg.html = EmailContent
+        if user and user.check_password(Logform.Password.data):
+            # login_user(user)
+            # otp_str = str(otp)
+            # Email = Logform.Email.data
+            # EmailContent = render_template("emails/log-otp-email.html", otp=otp_str)
+            # msg = Message(subject="Welcome back!", sender='stephengm31@gmail.com', recipients=[Email])
+            # msg.html = EmailContent
 
-        mail.send(msg)   
-        login_user(user)
-        flash('Email has been sent your account', 'primary')
-        return render_template ('login-verify.html', otp=otp) 
-        
+            # mail.send(msg)   
+            login_user(user)
+            # flash('Email has been sent your account', 'primary')
+            # return render_template ('login-verify.html', otp=otp)
+            return render_template("home.html") #reset-password.html
+ 
+        else:
+            flash('Invalid email or password', 'danger')
         #return render_template('home.html')  # Redirect to landing instead of render_template
 
     return render_template("forms/SignIn.html", Logform=Logform)
@@ -103,7 +112,7 @@ def register():
     Regform = RegistrationForm()
     if Regform.validate_on_submit():
             #flash('Password must contain a number[0-9], characters(!,$) and a capital letter ', 'primary')
-            user = Users(Fullname=Regform.Fullname.data, Email=Regform.Email.data, Password=Regform.Password.data)
+            user = Users(Fullname=Regform.Fullname.data, Email=Regform.Email.data, Password=Regform.Password.data, role=Regform.role.data)
             Fullname=Regform.Fullname.data
             # session['reset_email'] = Email
             fullname= session.get('Fullname')
@@ -373,6 +382,100 @@ def newreset():
             flash("Not validating",'danger')
     else:
         return redirect(url_for('login'))
+
+@app.route('/create_admin')
+def create_admin():
+    admin_email = "estifanos.gebremedhin@strathmore.edu"  # Replace with your admin email
+    admin_password = os.getenv('ADMIN_1_PASSWORD')
+    
+    admin = Users(Fullname="Admin User", Email=admin_email, Password=admin_password, role="admin")
+    db.session.add(admin)
+    db.session.commit()
+    return "Admin user created!"
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != 'admin':
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('landing_page'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/admin/veterinarians', methods=['GET', 'POST'])
+@admin_required
+def manage_veterinarians():
+    if request.method == 'POST':
+        veterinarian_id = request.form.get('veterinarian_id')
+        action = request.form.get('action')
+
+        veterinarian = Users.query.get(veterinarian_id)
+        if action == 'approve':
+            veterinarian.role = 'veterinarian'
+        elif action == 'reject':
+            db.session.delete(veterinarian)
+        db.session.commit()
+
+    veterinarians = Users.query.filter_by(role='pending_veterinarian').all()
+    return render_template('admin/manage_veterinarians.html', veterinarians=veterinarians)
+
+# app.py
+@app.route('/admin/register_veterinarian', methods=['GET', 'POST'])
+@admin_required
+def register_veterinarian():
+    if request.method == 'POST':
+        fullname = request.form.get('Fullname')
+        email = request.form.get('Email')
+        password = request.form.get('Password')
+
+        veterinarian = Users(Fullname=fullname, Email=email, Password=password, role='veterinarian')
+        db.session.add(veterinarian)
+        db.session.commit()
+        flash('Veterinarian registered successfully!', 'success')
+        return redirect(url_for('manage_veterinarians'))
+
+    return render_template('admin/register_veterinarian.html')
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
+
+@app.route('/profile', methods = ['GET', 'POST'])
+@login_required
+def profile():
+    form = ProfileForm(obj=current_user)
+    if form.validate_on_submit():
+        current_user.Fullname = form.Fullname.data
+        current_user.Email = form.Email.data
+
+        if form.profile_picture.data:
+            filename = secure_filename(form.profile_picture.data.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            form.profile_picture.data.save(filepath)
+            current_user.profile_picture = filepath
+
+        db.session.commit()
+        flash('Profile updated successfully!', 'success')
+        return redirect(url_for('profile'))
+    return render_template('profile.html', form=form)
+
+@app.route('/register_pet', methods=['GET', 'POST'])
+@login_required
+def register_pet():
+    form = PetForm()
+    if form.validate_on_submit():
+        pet = Pet(
+            name=form.name.data,
+            species=form.species.data,
+            breed=form.breed.data,
+            age=form.age.data,
+            owner_id=current_user.id
+        )
+        db.session.add(pet)
+        db.session.commit()
+        flash('Pet registered successfully!', 'success')
+        return redirect(url_for('profile'))
+    return render_template('register_pet.html', form=form)
 
 
 with app.app_context():
