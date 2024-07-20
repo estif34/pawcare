@@ -1,0 +1,93 @@
+{% extends"base/base.html" %}
+{% block head %}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\
+    <style>
+        .chart-container {
+            margin-top: 50px;
+        }
+    </style>
+    {% endblock %}
+
+{% block content %}
+    <!-- <div class="container">
+        <h1>Admin Report</h1>
+        <p>Total number of users: {{ user_count }}</p>
+        <p>Total number of vets: {{ vet_count }}</p>
+        <p>Total number of pets: {{ pet_count }}</p>
+        <p>Total number of appointments: {{ appointment_count }}</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
+    </div> -->
+    
+
+    <div class="container">
+        <h1 class="mt-4">Admin Reports</h1>
+        <div class="row chart-container">
+            <div class="profile-container col-md-6">
+                <h3>Appointments by Vet</h3>
+                <canvas id="appointmentsPieChart" width="400" height="400"></canvas>
+            </div><hr>
+            <div class="profile-container col-md-6">
+                <h3>System Counts</h3>
+                <canvas id="systemCountsBarChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% endblock %}
+    {% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/admin/reports/appointments_by_vet')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('appointmentsPieChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.values,
+                                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                                hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true
+                        }
+                    });
+                });
+
+            fetch('/admin/reports/system_counts')
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('systemCountsBarChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Count',
+                                data: data.values,
+                                backgroundColor: '#36A2EB',
+                                borderColor: '#36A2EB',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                });
+        });
+    </script>
+    {% endblock %}

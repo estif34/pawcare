@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Booked</title>
+</head>
+<body>
+    <h1>Appointment Booked</h1>
+    <p>Dear {{ appointment.owner.Fullname }}, </p>
+    <p>Your appointment has been successfully booked.</p>
+    <p>Pet: {{ appointment.pet.name }}</p>
+    <p>Vet: {{ appointment.vet.Fullname }}</p>
+    <p>Description: {{ appointment.description }}</p>
+    <p>Date: {{ appointment.date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    <p>Thank you for using our service!</p>
+</body>
+</html>

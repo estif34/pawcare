@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pet-care{% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='verify.css') }}">
+    <link rel="stylesheet" href="../static/mdb/css/mdb.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='lock-sesh.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.css" integrity="sha512-ZH/HmnDumPOALZDBfA+ytRm8EFuJ8jpa9NVPUONrSG8AD0I0cvY8gj/FPOfFQXHByaHzZ5ge82I+xvTrH5a5Lg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.3/main.min.js" integrity="sha512-5pQ3GIK4MSKjc/t2rG3KH9BFCQFQy5AmnNwN2RWPSDJSC5arL/mtin7hjWBBmrzVswH15mfFFBEoN6QRZ+ZTog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+
+    
+    <script type="module" type="text/javascript" src="../static/mdb/js/mdb.umd.min.js"></script>
+    {% block head %} {% endblock %}
+    <style>
+        body{
+           font-family: 'Montserrat', 'sans-serif';
+        }
+        /* Navbar styling */
+        .navbar {
+            background-color: #343a40;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            
+        }
+        .navbar-nav .nav-link {
+            font-family: 'Montserrat', sans-serif;
+            color: #f8f9fa;
+            font-size: 18px;
+            margin: 0 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            background-color: #495057;
+            color: #ffc107;
+        }
+        
+        .navbar-nav .nav-link.active {
+            background-color: #495057;
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item .btn {
+            color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .nav-item .btn:hover {
+            color: #ffc107;
+        }
+        
+        /* Modal styling */
+        .modal-content {
+            background-color: #343a40;
+            color: #f8f9fa;
+        }
+        
+        .modal-footer .btn-secondary {
+            background-color: #ffc107;
+            color: #343a40;
+        }
+        
+        .modal-footer .btn-primary {
+            background-color: #495057;
+            color: #ffc107;
+        }
+        
+        /* Special link styling */
+        .nav-item .nav-link.lock {
+            color: #fca311;
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+            margin-left: 30px;
+        }
+        
+        .nav-item .nav-link.logout {
+            color: #ff0000;
+            font-size: 18px;
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="land-navi">
+        <nav class="navbar navbar-expand-lg shadow-none" data-mdb-theme="light">
+            <div class="home-nav">
+                <button data-mdb-collapse-init class="navbar-toggler" type="button"
+                    data-mdb-target="#navbarCenteredExample" aria-controls="navbarCenteredExample" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="home-petco">
+                    <span style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Paw Care &hearts;  </span>
+                </div>
+                <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
+                    <ul class="navbar-nav mb-1 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href=""></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{{ url_for('home') }} "style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('about') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">About</a>
+                        </li>
+                        {% if current_user.role == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('manage_vets') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Veterinarians</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('manage_users') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register_admin') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Register Admin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_reports') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Reports</a>
+                        </li>
+                        {% endif %}
+                        {% if current_user.role == 'veterinarian' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('vet_appointments') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Appointments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('add_medical_record') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Add Medical Record</a>
+                        </li>
+                        {% endif %}
+                        {% if current_user.role == 'user' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('my_pets') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">My Pets</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('my_appointments') }}"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">My Appointments</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile"style="color: #f8f9fa; font-family: 'Montserrat', sans-serif;">Profile</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="menu">
+                    <div class="nav-item">
+                        <a class="nav-link lock" href="{{ url_for('checkPass') }}">Lock</a>
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link logout" data-mdb-ripple-init data-mdb-modal-init data-mdb-target="#staticBackdrop">Log out</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Lock Modal -->
+
+        <!-- Logout Modal -->
+        <div class="modal fade" id="staticBackdrop" data-mdb-backdrop="static" data-mdb-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+           
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="staticBackdropLabel" style="font-weight: 600;text-align: center;">
+                            Are you sure you want to Log Out?</h6>
+                        <button type="button" class="btn-close" data-mdb-ripple-init data-mdb-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body"> If you do decide to Log Out, all your session will be lost</div>
+                    <div class="modal-footer">
+                        <button type="button" style="background-color:#ffc107; color:#343a40;" class="btn btn-secondary"
+                            data-mdb-ripple-init data-mdb-dismiss="modal"> No, return to session</button>
+                        <a type="button" style="background-color:#495057; color:#eab000;" class="btn btn-primary" id="confirmLogout"
+                            data-mdb-ripple-init href="/logout">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+        }
+       
+        window.onload = function () {
+          preventBack()
+        };
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,102 @@
+{% extends "base/index.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+
+<navbar>
+    <!-- Navbar content goes here -->
+</navbar>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center mt-4">
+            <h2>Let's Get Started</h2>
+            <!-- <img src="{{ url_for('static', filename='images/vet-home.jpg') }}" id="logo" class="mb-4" alt="Pet Care" style="max-width: 150px;"/> -->
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <!-- Pills navs -->
+            <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="tab-login" role="tab" aria-controls="pills-login" href="{{ url_for('login') }}" aria-selected="true">Login</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="tab-register" data-mdb-pill-init href="#" role="tab" aria-controls="" aria-selected="true">Register</a>
+                </li>
+            </ul>
+            <!-- Pills navs -->
+
+            {% if request.method == 'POST' %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                <div class="alert alert-primary">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            {% endif %}
+
+            <div class="tab-pane fade show active" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+                <form action="/register" method="POST">
+                    <!-- Registration form content -->
+                    {{ Regform.csrf_token }}
+
+                    <!-- Fullname input -->
+                    <div class="form-outline mb-3 mt-2">
+                        {% for error in Regform.Fullname.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                        <input type="text" id="registerName" name="Fullname" class="form-control" maxlength="250" required />
+                        <label class="form-label" for="registerName">Fullname</label>
+                    </div>
+
+                    <!-- Email input -->
+                    <div class="form-outline mb-3">
+                        {% for error in Regform.Email.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                        <input type="email" id="registerEmail" name="Email" class="form-control" required />
+                        <label class="form-label" for="registerEmail">Email</label>
+                    </div>
+
+                    <!-- Password input -->
+                    <div class="form-outline mb-3">
+                        {% for error in Regform.Password.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                        <input type="password" id="registerPassword" name="Password" title="Password must have capital letter [Aa], numbers[0-9] and be minimum 6 characters" class="form-control" min="6" max="200" required />
+                        <label class="form-label" for="registerPassword">Password</label>
+                    </div>
+
+                    <!-- Repeat Password input -->
+                    <div class="form-outline mb-3">
+                        {% for error in Regform.Confirm_Password.errors %}
+                        <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                        <input type="password" id="registerRepeatPassword" name="Confirm_Password" class="form-control" required />
+                        <label class="form-label" for="registerRepeatPassword">Confirm password</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3 mt-2 rounded-pill shadow-sm">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border: 1px solid #ced4da;
+        padding: 10px;
+    }
+    .form-control:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+</style>
+
+{% endblock %}

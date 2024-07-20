@@ -1,11 +1,11 @@
-from flask import Flask, render_template,session,redirect,abort, request,flash,g,url_for
+from flask import Flask, render_template,session,redirect,abort, request,flash,g,url_for, jsonify
 from google_auth_oauthlib.flow import Flow
 from flask_mail import Mail,Message
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_session import Session
-from models import Users,RegistrationForm,db,LoginForm, Vets, ProfileForm, Pet, PetForm
+from models import Users,RegistrationForm,db,LoginForm, Vets, Appointment, MedicalRecord, ProfileForm, Pet, PetForm, AppointmentForm, CancelAppointmentForm, RescheduleAppointmentForm, AdminRegistrationForm, EditVetForm, EditUserForm, VetAppointmentForm, MedicalRecordForm
 from random import *
-import pathlib,os
+import pathlib,os, secrets, json
 from flask_bcrypt import Bcrypt  
 from dotenv import load_dotenv   
 from googleapiclient.discovery import build
@@ -14,6 +14,9 @@ from bcrypt import hashpw, gensalt
 from functools import wraps
 from flask_bcrypt import generate_password_hash
 from werkzeug.utils import secure_filename
+from datetime import datetime, date, time, timedelta
+from PIL import Image
+from sqlalchemy import func
 
 
 load_dotenv()
@@ -93,7 +96,7 @@ def login():
             flash('Invalid email or password', 'danger')
         #return render_template('home.html')  # Redirect to landing instead of render_template
 
-    return render_template("forms/SignIn.html", Logform=Logform)
+    return render_template("forms/login.html", Logform=Logform)
 
 @app.route('/login-check/<otp>', methods=["GET","POST"])
 def logchecker(otp):
@@ -133,7 +136,7 @@ def register():
             return render_template ('verify.html', otp=otp) 
 
 
-    return render_template("forms/SignUp.html", Regform = Regform)
+    return render_template("forms/register.html", Regform = Regform)
 
 @app.route('/auth-checker/<otp>', methods=["GET","POST"])
 def checker(otp):
@@ -419,22 +422,22 @@ def manage_veterinarians():
     veterinarians = Users.query.filter_by(role='pending_veterinarian').all()
     return render_template('admin/manage_veterinarians.html', veterinarians=veterinarians)
 
-# app.py
-@app.route('/admin/register_veterinarian', methods=['GET', 'POST'])
-@admin_required
+@app.route('/register_veterinarian', methods=['GET', 'POST'])
+@login_required
 def register_veterinarian():
-    if request.method == 'POST':
-        fullname = request.form.get('Fullname')
-        email = request.form.get('Email')
-        password = request.form.get('Password')
-
-        veterinarian = Users(Fullname=fullname, Email=email, Password=password, role='veterinarian')
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+    form = AdminRegistrationForm()
+    if form.validate_on_submit():
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        veterinarian = Users(Fullname=form.fullname.data, Email=form.email.data, Password=form.password.data, role='veterinarian')
         db.session.add(veterinarian)
         db.session.commit()
-        flash('Veterinarian registered successfully!', 'success')
-        return redirect(url_for('manage_veterinarians'))
-
-    return render_template('admin/register_veterinarian.html')
+        flash('Veterinarian account has been created!', 'success')
+        return redirect(url_for('home'))
+    
+    return render_template('admin/register_veterinarian.html', form=form)
 
 
 def allowed_file(filename):
@@ -464,18 +467,538 @@ def profile():
 def register_pet():
     form = PetForm()
     if form.validate_on_submit():
+        if form.profile_photo.data:
+            photo_file = save_picture(form.profile_photo.data)
+        else:
+            photo_file = None
         pet = Pet(
             name=form.name.data,
             species=form.species.data,
             breed=form.breed.data,
-            age=form.age.data,
+            dob=form.dob.data,
+            profile_photo=photo_file,
             owner_id=current_user.id
         )
         db.session.add(pet)
         db.session.commit()
         flash('Pet registered successfully!', 'success')
-        return redirect(url_for('profile'))
+        return redirect(url_for('my_pets'))
     return render_template('register_pet.html', form=form)
+
+@app.route('/update_pet/<int:pet_id>', methods=['GET', 'POST'])
+@login_required
+def update_pet(pet_id):
+    pet = Pet.query.get_or_404(pet_id)
+    form=PetForm()
+    if form.validate_on_submit():
+        pet.name = form.name.data
+        pet.species = form.species.data
+        pet.breed = form.breed.data
+        pet.dob = form.dob.data
+        if form.profile_photo.data:
+            photo_file = save_picture(form.profile_photo.data)
+            pet.profile_photo = photo_file
+        db.session.commit()
+        flash('Your pet\'s profile has been updated!', 'success')
+        return redirect(url_for('my_pets'))
+    elif request.method == 'GET':
+        form.name.data = pet.name
+        form.species.data = pet.species
+        form.breed.data = pet.breed
+        form.dob.data = pet.dob
+    return render_template('update_pet.html', form=form, pet=pet)
+
+def save_picture(form_picture):
+    print(form_picture)
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/pet_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+
+def send_mail_notification(recipient, subject, template, context):
+    msg = Message(
+        subject,
+        sender='stephengm31@gmail.com',
+        recipients=[recipient]
+    )
+    msg.html = render_template(template, **context)
+    mail.send(msg)
+
+@app.route('/book_appointment', methods=['GET', 'POST'])
+@login_required
+def book_appointment():
+    form = AppointmentForm()
+    form.Pet.choices = [(Pet.id, Pet.name) for Pet in Pet.query.filter_by(owner_id=current_user.id).all()]
+    form.vet.choices = [(Users.id, Users.Fullname) for Users in Users.query.filter_by(role='veterinarian').all()]#, status='approved').all()]
+
+    if form.validate_on_submit():
+        appointment_datetime = datetime.combine(form.date.data, form.time.data)
+        appointment = Appointment(
+            pet_id = form.Pet.data,
+            vet_id = form.vet.data,
+            owner_id=current_user.id,
+            date=appointment_datetime,
+            description=form.description.data,
+            status = 'pending'
+        )
+        db.session.add(appointment)
+        db.session.commit()
+
+        send_mail_notification(
+            recipient=current_user.Email,
+            subject='Appointment Requested',
+            template='emails/appointment_requested_owner.html',
+            context={'appointment': appointment}
+        )
+        send_mail_notification(
+            recipient=appointment.vet.Email,
+            subject='Appointment Requested',
+            template='emails/appointment_requested_vet.html',
+            context={'appointment': appointment}
+        )
+
+        flash('Your appointment request has been submitted and is pending approval.', 'info')
+        return redirect(url_for('my_appointments'))
+
+    return render_template('book_appointment.html', form=form)
+
+@app.route('/reschedule_appointment/<int:appointment_id>', methods=['GET', 'POST'])
+@login_required
+def reschedule_appointment(appointment_id):
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.owner_id != current_user.id: #and appointment.vet_id != current_user.id
+        flash('You are not authorized to reschedule this appointment.', 'danger')
+        return redirect(url_for('profile'))
+    
+    form = RescheduleAppointmentForm()
+    if form.validate_on_submit():
+        appointment_datetime = datetime.combine(form.date.data, form.time.data)
+        appointment.date = appointment_datetime
+        db.session.commit()
+
+        send_mail_notification(
+            recipient=current_user.Email,
+            subject='Appointment Rescheduled',
+            template='emails/appointment_rescheduled.html',
+            context={'appointment': appointment}
+        )
+        send_mail_notification(
+            recipient=appointment.vet.Email,
+            subject='Appointment Rescheduled',
+            template='emails/appointment_rescheduled.html',
+            context={'appointment': appointment}
+        )
+
+        flash('Appointment rescheduled successfully!', 'success')
+        return redirect(url_for('my_appointments'))
+    
+    return render_template('reschedule_appointment.html', form=form, appointment=appointment)
+
+@app.route('/cancel_appointment/<int:appointment_id>', methods=['GET', 'POST'])
+@login_required
+def cancel_appointment(appointment_id):
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.owner_id != current_user.id: #and appointment.vet_id != current_user.id
+        flash('You are not authorized to cancel this appointment.', 'danger')
+        return redirect(url_for('profile'))
+    
+    form = CancelAppointmentForm()
+    if form.validate_on_submit():
+        appointment.status = 'cancelled'
+        db.session.commit()
+
+        send_mail_notification(
+            recipient=current_user.Email,
+            subject='Appointment Cancelled',
+            template='emails/appointment_cancelled.html',
+            context={'appointment': appointment}
+        )
+        send_mail_notification(
+            recipient=appointment.vet.Email,
+            subject='Appointment Cancelled',
+            template='emails/appointment_cancelled_vet.html',
+            context={'appointment': appointment}
+        )
+
+        flash('Appointment cancelled successfully!', 'success')
+        return redirect(url_for('my_appointments'))
+    
+    return render_template('cancel_appointment.html', form=form, appointment=appointment)
+
+@app.route('/vet/book_appointment', methods=['GET', 'POST'])
+@login_required
+def vet_book_appointment():
+    if current_user.role != 'veterinarian':
+        abort(403)
+    
+    form = VetAppointmentForm()
+    if form.validate_on_submit():
+        appointment_datetime = datetime.combine(form.date.data, form.time.data)
+        appointment = Appointment(
+            pet_id = form.pet.data,
+            vet_id = current_user.id,
+            owner_id = form.pet_owner.data,
+            date = appointment_datetime,
+            description = form.description.data,
+            status='scheduled'
+        )
+        db.session.add(appointment)
+        db.session.commit()
+        send_mail_notification(
+            recipient=appointment.owner.Email,
+            subject='Appointment Booked',
+            template='emails/appointment_booked.html',
+            context={'appointment': appointment}
+        )
+
+        flash('Appointment successfully booked.', 'success')
+        return redirect(url_for('vet_appointments'))
+    return render_template('vet_book_appointment.html', form=form)
+
+@app.route('/my_pets')
+@login_required
+def my_pets():
+    pets = current_user.pets
+    return render_template('my_pets.html', pets=pets)
+
+@app.route('/my_appointments')
+@login_required
+def my_appointments():
+    appointments = current_user.owner_appointments
+    return render_template('my_appointments.html', appointments=appointments)
+
+# @app.route('/appointments')
+# @login_required
+# def appointments():
+#     appointments = Appointment.query.all()
+#     appointments_list = json.dumps([{
+#         'pet_name': appointment.pet.name,
+#         'vet_name': appointment.vet.Fullname,
+#         'date': appointment.date.isoformat(),
+#         'description': appointment.description,
+#         'url': url_for('reschedule_appointment', appointment_id=appointment.id)
+#     } for appointment in appointments if appointment.status == "scheduled"])
+#     appointments_json = json.dumps(appointments_list)
+#     return render_template('my_appointments.html', appointments=appointments_json)
+
+@app.route('/register_admin', methods=['GET', 'POST'])
+@login_required
+def register_admin():
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+    form = AdminRegistrationForm()
+    if form.validate_on_submit():
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        admin = Users(Fullname=form.fullname.data, Email=form.email.data, Password=form.password.data, role='admin')
+        db.session.add(admin)
+        db.session.commit()
+        flash('Admin account has been created!', 'success')
+        return redirect(url_for('home'))
+    
+    return render_template('register_admin.html', form=form)
+
+@app.route('/manage_vets', methods=['GET', 'POST'])
+@login_required
+def manage_vets():
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+    
+    vets = Users.query.filter_by(role='veterinarian', status='active').all()
+    suspended_vets = Users.query.filter_by(role='veterinarian', status='suspended').all()
+    return render_template('manage_vets.html', vets=vets,  suspended_vets=suspended_vets)
+
+@app.route('/activate_vets/<int:vet_id>', methods=['GET', 'POST'])
+@login_required
+def activate_vets(vet_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to perform this action', 'danger')
+        return redirect(url_for('home'))
+    
+    vet = Users.query.get_or_404(vet_id)
+    if vet.status == 'suspended':
+        vet.status = 'active'
+        db.session.commit()
+        flash('Vet has been activated!', 'success')
+    else:
+        flash('Vet is not suspended', 'warning')
+    
+    return redirect(url_for('manage_vets'))
+
+@app.route('/manage_users', methods=['GET', 'POST'])
+@login_required
+def manage_users():
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+    
+    users = Users.query.filter_by(role='user', status='active').all()
+    suspended_users = Users.query.filter_by(role='user', status='suspended').all()
+    return render_template('manage_users.html', users=users, suspended_users=suspended_users)
+
+@app.route('/activate_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def activate_user(user_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to perform this action', 'danger')
+        return redirect(url_for('home'))
+    
+    user = Users.query.get_or_404(user_id)
+    if user.status == 'suspended':
+        user.status = 'active'
+        db.session.commit()
+        flash('User has been activated!', 'success')
+    else:
+        flash('User is not suspended', 'warning')
+    
+    return redirect(url_for('manage_users'))
+
+
+@app.route('/edit_vet/<int:vet_id>', methods=['GET', 'POST'])
+@login_required
+def edit_vet(vet_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+
+    vet = Users.query.get_or_404(vet_id)
+    form = EditVetForm()
+    if form.validate_on_submit():
+        vet.Fullname = form.fullname.data
+        vet.Email = form.email.data
+        vet.status = form.status.data
+        db.session.commit()
+        flash('Veterinarian details have been updated!', 'success')
+        return redirect(url_for('manage_vets'))
+    
+    elif request.method == 'GET':
+        form.fullname.data = vet.Fullname
+        form.email.data = vet.Email
+        # form.status.data = vet.status
+    
+    return render_template('edit_vet.html', form=form)
+
+@app.route('/delete_vet/<int:vet_id>', methods=['GET', 'POST'])
+@login_required
+def delete_vet(vet_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+
+    vet = Users.query.get_or_404(vet_id)
+    # db.session.delete(vet)
+    vet.status = 'suspended'
+    db.session.commit()
+    flash('Veterinarian account has been suspended!', 'success')
+    return redirect(url_for('manage_vets'))
+
+@app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+
+    user = Users.query.get_or_404(user_id)
+    form = EditUserForm()
+    if form.validate_on_submit():
+        user.Fullname = form.fullname.data
+        user.Email = form.email.data
+        db.session.commit()
+        flash('User details have been updated!', 'success')
+        return redirect(url_for('manage_users'))
+    
+    elif request.method == 'GET':
+        form.fullname.data = user.Fullname
+        form.email.data = user.Email
+    
+    return render_template('edit_user.html', form=form)
+
+@app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def delete_user(user_id):
+    if current_user.role != 'admin':
+        flash('You do not have permission to view this page', 'danger')
+        return redirect(url_for('home'))
+
+    user = Users.query.get_or_404(user_id)
+    # db.session.delete(user)
+    user.status = 'suspended'
+    db.session.commit()
+    flash('User account has been suspended!', 'success')
+    return redirect(url_for('manage_users'))
+
+@app.route('/vet/appointments', methods=['GET','POST'])
+@login_required
+def vet_appointments():
+    if current_user.role != 'veterinarian':
+        abort(403)
+    pending_appointments = Appointment.query.filter_by(vet_id=current_user.id, status='pending').all()
+    return render_template('vet_appointments.html', appointments=pending_appointments)
+
+@app.route('/approve_appointment/<int:appointment_id>', methods=['POST'])
+@login_required
+def approve_appointment(appointment_id):
+    if current_user.role != 'veterinarian':
+        abort(403)
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.vet_id != current_user.id:
+        flash('You do not have permission to approve this appointment.', 'danger')
+        return redirect(url_for('vet_appointments'))
+    appointment.status = 'scheduled'
+    db.session.commit()
+    send_mail_notification(
+            recipient=appointment.owner.Email,
+            subject='Appointment Approved',
+            template='emails/appointment_approved_owner.html',
+            context={'appointment': appointment}
+        )
+    send_mail_notification(
+            recipient=appointment.vet.Email,
+            subject='Appointment Approved',
+            template='emails/appointment_approved_vet.html',
+            context={'appointment': appointment}
+        )
+
+    flash('Appointment has been approved', 'success')
+    return redirect(url_for('vet_appointments'))
+
+@app.route('/reject_appointment/<int:appointment_id>', methods=['POST'])
+@login_required
+def reject_appointment(appointment_id):
+    if current_user.role != 'veterinarian':
+        abort(403)
+    appointment = Appointment.query.get_or_404(appointment_id)
+    if appointment.vet_id != current_user.id:
+        flash('You do not have permission to approve this appointment.', 'danger')
+        return redirect(url_for('vet_appointments'))
+    appointment.status = 'rejected'
+    db.session.commit()
+    send_mail_notification(
+            recipient=appointment.owner.Email,
+            subject='Appointment Rejected',
+            template='emails/appointment_rejected_owner.html',
+            context={'appointment': appointment}
+        )
+    send_mail_notification(
+            recipient=appointment.vet.Email,
+            subject='Appointment Rejected',
+            template='emails/appointment_rejected_vet.html',
+            context={'appointment': appointment}
+        )
+
+    flash('Appointment has been rejected', 'danger')
+    return redirect(url_for('vet_appointments'))
+
+@app.route('/vet/appointments/data')
+@login_required
+def vet_appointments_data():
+    if current_user.role != 'veterinarian':
+        abort(403)
+    appointments =Appointment.query.filter_by(vet_id=current_user.id, status='scheduled').all()
+    events = []
+    for appointment in appointments:
+        events.append({
+            'title': f"{appointment.pet.name} with {appointment.owner.Fullname}",
+            'start': appointment.date.isoformat(),
+            'pet_id': appointment.pet_id
+            # 'end':(appointment.date + timedelta(hour=1)).isoformat()
+        })
+    return jsonify(events)    
+
+# Route to fetch data for the pie chart (appointments by vet)
+@app.route('/admin/reports/appointments_by_vet')
+@login_required
+def appointments_by_vet():
+    if current_user.role != 'admin':
+        abort(403)  # Forbidden if not an admin
+
+    # Query to get the count of appointments per vet
+    appointments_data = db.session.query(
+        Users.Fullname, func.count(Appointment.id)
+    ).join(Appointment, Users.id == Appointment.vet_id).filter(Appointment.status == 'scheduled').group_by(Users.Fullname).all()
+
+    data = {
+        'labels': [vet for vet, _ in appointments_data],
+        'values': [count for _, count in appointments_data]
+    }
+
+    return jsonify(data)
+
+# Route to fetch data for the bar chart (counts of pets, vets, and owners)
+@app.route('/admin/reports/system_counts')
+@login_required
+def system_counts():
+    if current_user.role != 'admin':
+        abort(403)  # Forbidden if not an admin
+
+    pets_count = db.session.query(func.count(Pet.id)).scalar()
+    vets_count = db.session.query(func.count(Users.id)).filter_by(role='veterinarian').scalar()
+    owners_count = db.session.query(func.count(Users.id)).filter_by(role='user').scalar()
+
+    data = {
+        'labels': ['Pets', 'Vets', 'Owners'],
+        'values': [pets_count, vets_count, owners_count]
+    }
+
+    return jsonify(data)
+
+@app.route('/admin/reports')
+@login_required
+def admin_reports():
+    if current_user.role != 'admin':
+        abort(403)  # Forbidden if not an admin
+    return render_template('admin/admin_reports.html')
+
+@app.route('/vet/add_medical_record', methods=['GET', 'POST'])
+@login_required
+def add_medical_record():
+    if current_user.role != 'veterinarian':
+        abort(403)
+
+    form = MedicalRecordForm()
+    if form.validate_on_submit():
+        record = MedicalRecord(
+            pet_id=form.pet.data,
+            vet_id=current_user.id,
+            description=form.description.data,
+            diagnosis=form.diagnosis.data,
+            tests_performed=form.tests_performed.data,
+            test_results=form.test_results.data,
+            action=form.action.data,
+            medication=form.medication.data,
+            comments=form.comments.data
+        )
+        db.session.add(record)
+        db.session.commit()
+        flash('Medical record added successfully.', 'success')
+        return redirect(url_for('vet_appointments'))  # Redirect to a suitable page
+
+    return render_template('add_medical_record.html', form=form)
+
+@app.route('/owner/view_medical_records/<int:pet_id>')
+@login_required
+def view_medical_records(pet_id):
+    pet = Pet.query.get_or_404(pet_id)
+    # if pet.owner_id != current_user.id:
+    if current_user.role not in ['veterinarian', 'user'] or (current_user.role == 'user' and pet.owner_id != current_user.id):
+        abort(403)
+
+    medical_records = MedicalRecord.query.filter_by(pet_id=pet.id).all()
+    return render_template('view_medical_records.html', pet=pet, medical_records=medical_records)
+
+@app.route('/about')
+def about():
+    return render_template('About.html')
 
 
 with app.app_context():

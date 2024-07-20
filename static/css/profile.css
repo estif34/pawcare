@@ -119,3 +119,10 @@ body {
     background-color: #D18B09;
     border-color: #D18B09;
 }
+
+.pet-profile-photo {
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    object-fit: cover;
+}

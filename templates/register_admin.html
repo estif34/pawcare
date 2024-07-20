@@ -1,6 +1,6 @@
 {% extends"base/base.html" %}
 {% block head %}
-
+{{ super() }}
     <style>
         /* body {
             background-color: #f0f0f0;
@@ -18,12 +18,15 @@
         }
     </style>
 {% endblock %}
+    
 {% block content %}
+
+
 <br><br>
 
     <div class="container">
-        <h1>Register Veterinarian</h1>
-        <form method="POST" action="{{ url_for('register_veterinarian') }}">
+        <h1>Register Admin</h1>
+        <form method="POST" action="{{ url_for('register_admin') }}"><br>
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.fullname.label }}
@@ -63,3 +66,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     {% endblock %}
+
+

@@ -1,0 +1,33 @@
+{% extends"base/base.html" %}
+{% block content %}
+
+    <div class="container">
+        {% if current_user.role == 'user' %}
+            <h1 class="mt-4">My Pets</h1>
+            <div class="pets-container">
+                {% for pet in current_user.pets %}
+                    <div class="pet">
+                        <h3 style="color: black;">{{ pet.name }}</h3>
+                        {% if pet.profile_photo %}
+                            <img src="{{ url_for('static', filename='pet_pics/' ~ pet.profile_photo) }}" alt="{{ pet.PetName }}" class="pet-profile-photo">
+                        {% endif %}
+                            <a href="{{ url_for('update_pet', pet_id=pet.id) }}" class="btn btn-secondary">Edit</a>
+                        <p>Species: {{ pet.species }}</p>
+                        <p>Breed: {{ pet.breed }}</p>
+                        <p>Date of Birth: {{ pet.dob.strftime('%Y-%m-%d') }}</p>
+                        <p>Age: {{ pet.age() }}</p>
+                        <a href="{{ url_for('view_medical_records', pet_id=pet.id) }}" class="btn btn-secondary">View Medical Records</a>
+                    </div>
+                {% endfor %}
+            </div>
+        
+        <a href="{{ url_for('register_pet') }}" class="btn btn-success mt-3">Register a New Pet</a>
+
+        <br>
+        <br>
+
+        {% endif %}
+    </div>
+    {% endblock %}
+
+

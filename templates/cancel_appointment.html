@@ -1,0 +1,15 @@
+{% extends"base/base.html" %}
+{% block content %}
+    <div class="container mt-5">
+        <h1>Cancel Appointment</h1>
+        <p>Are you sure you want to cancel this appointment?</p>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.submit(class_="btn btn-danger") }}
+            </div>
+        </form>
+
+    </div>
+    {% endblock %}
+

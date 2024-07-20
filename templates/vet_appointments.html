@@ -1,0 +1,125 @@
+{% extends"base/base.html" %}
+{% block head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .fc-daygrid-day {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .fc-daygrid-day:hover {
+            background-color: #f0f0f0;
+        }
+        .appointments-list {
+            margin-top: 30px;
+        }
+        .appointment-item {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+    {% endblock %}
+    {% block content %}
+    
+    <div class="container mt-5">
+    <h1 class="mb-4">Appointments</h1>
+    <h1>Pending Appointments</h1>
+    <table class="table table-hover table-bordered">
+    <thead class="thead-light">
+        <tr>
+            <th><strong>Pet</strong></th>
+            <th><strong>Date</strong></th>
+            <th><strong>Description</strong></th>
+            <th><strong>Action</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in appointments %}
+        <tr>
+            <td>{{ appointment.pet.name }}</td>
+            <td>{{ appointment.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ appointment.description }}</td>
+            <td>
+                <form action="{{ url_for('approve_appointment', appointment_id=appointment.id) }}" method="post">
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+                <form action="{{ url_for('reject_appointment', appointment_id=appointment.id) }}" method="post">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this appointment?')">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+
+        
+        <!-- <div id="calendar"></div> -->
+        <div class="appointments-list mt-4">
+            <h2>Upcoming Appointments</h2>
+            <div id="appointments"></div><br>
+        </div>
+            <a href="{{ url_for('vet_book_appointment') }}" class="btn btn-primary">Book Follow-up Appointment</a>
+    </div><br>
+
+
+    {% endblock %}
+
+    {% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: '/vet/appointments/data',
+                eventClick: function(info) {
+                    // Handle event click if needed
+                }
+            });
+            calendar.render();
+        });
+            //Fetch appointments for the list
+        //     fetch('/vet/appointments/data')
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             const appointmentsDiv = document.getElementById('appointments');
+        //             data.forEach(event => {
+        //                 const appointmentItem = document.createElement('div');
+        //                 appointmentItem.classList.add('appointment-item');
+        //                 appointmentItem.innerHTML = `
+        //                     <strong>${event.title}</strong><br>
+        //                     <span>${new Date(event.start).toLocaleString()}</span>
+        //                 `;
+        //                 appointmentsDiv.appendChild(appointmentItem);
+        //             });
+        //         });
+        // });
+
+        fetch('/vet/appointments/data')
+        .then(response => response.json())
+        .then(data => {
+            const appointmentsDiv = document.getElementById('appointments');
+            data.forEach(event => {
+                const appointmentItem = document.createElement('div');
+                appointmentItem.classList.add('appointment-item');
+                appointmentItem.innerHTML = `
+                    <a href="/owner/view_medical_records/${event.pet_id}">
+                         <strong>${event.title}</strong>
+                         <span>${new Date(event.start).toLocaleString()}</span>
+                    </a>
+                 `;
+                appointmentsDiv.appendChild(appointmentItem);
+            });
+        });
+
+    </script>
+    {% endblock %}

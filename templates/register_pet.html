@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Pet</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-</head>
-<body>
+{% extends"base/base.html" %}
+{% block title %}Register Pet{% endblock %}
+{% block content %}
+
     <div class="container">
         <h1 class="mt-4">Register a New Pet</h1>
-        <form method="POST" action="">
+        <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
+            
             <div class="form-group">
                 {{ form.name.label(class="form-control-label") }}
                 {{ form.name(class="form-control") }}
@@ -24,12 +20,22 @@
                 {{ form.breed(class="form-control") }}
             </div>
             <div class="form-group">
-                {{ form.age.label(class="form-control-label") }}
-                {{ form.age(class="form-control") }}
+                {{ form.dob.label(class="form-control-label") }}
+                {{ form.dob(class="form-control", id='dob') }}
             </div>
+            <div class="form-group">
+                {{ form.profile_photo.label(class="form-label") }}
+                {{ form.profile_photo(class="form-control-file") }}
+            </div><br>
             <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
         </form>
     </div>
-</body>
-
-</html>
+{% endblock %}
+{% block scripts %}
+<script>
+    // JavaScript to set the minimum date to today's date
+    const dateInput = document.querySelector('input[type="date"]');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('max', today);
+</script>
+{% endblock %}

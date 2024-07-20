@@ -1,0 +1,56 @@
+{% extends "base/base.html" %}
+{% block head %}
+    <style>
+        .profile-container {
+            margin-top: 20px;
+        }
+        .table {
+            margin-bottom: 40px;
+        }
+        .schedule-button {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<br><br>
+<div class="container">
+    <div class="container">
+        <h2 class="mt-4">Appointments</h2>
+        <hr>
+        <table class="table table-hover table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Pet</th>
+                    <th>Vet</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments if appointment.status == 'scheduled' or appointment.status == 'pending' %}
+                <tr>
+                    <td>{{ appointment.pet.name }}</td>
+                    <td>{{ appointment.vet.Fullname }}</td>
+                    <td>{{ appointment.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ appointment.description }}</td>
+                    <td>{{ appointment.status }}</td>
+                    <td>
+                        {% if appointment.status == 'pending' %}
+                        <a href="{{ url_for('reschedule_appointment', appointment_id=appointment.id) }}" class="btn btn-warning btn-sm">Reschedule</a>
+                        <a href="{{ url_for('cancel_appointment', appointment_id=appointment.id) }}" class="btn btn-danger btn-sm">Cancel</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="schedule-button">
+            <a href="{{ url_for('book_appointment') }}" class="btn btn-success mt-3">Schedule Appointment</a>
+        </div>
+    </div>
+    <br><br><br>
+</div>
+{% endblock %}
