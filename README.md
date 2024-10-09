@@ -15,8 +15,8 @@ PawCare is a web application designed to assist pet owners in managing their pet
 ### Steps
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/estif34/petco.git
-    cd petco
+    git clone https://github.com/estif34/pawcare.git
+    cd pawcare
     ```
 
 2. **Create a virtual environment:**
@@ -49,7 +49,7 @@ PawCare is a web application designed to assist pet owners in managing their pet
 
 ## Project Structure
 ```markdown
-petco/
+pawcare/
 │
 ├── __pycache__/
 │
