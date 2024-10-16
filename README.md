@@ -4,6 +4,20 @@
 ## Description
 PawCare is a web application designed to assist pet owners in managing their pets' healthcare needs. The platform provides functionalities such as scheduling appointments, notifications for veterinary appointments, and maintaining a  health record for pets. The application aims to simplify pet healthcare management, ensuring pets receive timely and proper care.
 
+## Demo
+### Pet owner demo
+
+https://github.com/user-attachments/assets/bc2b93da-2d23-4195-ae5d-5fb7515f82a3
+
+### Vet Demo
+
+https://github.com/user-attachments/assets/2d4113e5-9b1a-43c5-88be-132e4f7c55be
+
+### Admin Demo
+
+https://github.com/user-attachments/assets/c28bcb47-a905-4ce5-bf9b-b5858f2f7c2f
+
+
 ## Installation
 
 ### Prerequisites
